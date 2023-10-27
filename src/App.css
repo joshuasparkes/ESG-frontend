@@ -7,6 +7,503 @@
   pointer-events: none;
 }
 
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+
+/* body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 60px;
+} */
+
+.arrow {
+  position: absolute;
+  bottom: 10px;
+}
+
+.create-account-btn {
+  margin-left: 10px;
+  margin-top: 10px;
+  text-decoration: none;
+  border: black 2px solid;
+  border-radius: 6px;
+  padding: 10px;
+  color: #000;
+}
+
+.sign-up-btn {
+  margin-left: 10px;
+  margin-top: 10px;
+  text-decoration: none;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: rgba(0, 0, 0, 0.8) 2px solid;
+  border-radius: 6px;
+  padding: 10px;
+  color: #fff;
+}
+
+.get-started-btn {
+  margin-left: 10px;
+  margin-top: 10px;
+  text-decoration: none;
+  background-color: #000;
+  border-radius: 6px;
+  padding: 15px 20px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #fff;
+}
+
+.demo-btn {
+  margin-left: 10px;
+  margin-top: 10px;
+  text-decoration: none;
+  border: #000 2px solid;
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 15px 20px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #000;
+}
+
+.container1 {
+  height: 80vh; /* Sets the minimum height of the container to fill the viewport */
+  width: 100vw;
+  display: flex; /* Use Flexbox */
+  flex-direction: column; /* Stack the children vertically */
+  justify-content: center; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+  padding-top: 30vh;
+  margin-bottom: 20vh;
+}
+
+.container1b {
+  height: 60; /* Sets the minimum height of the container to fill the viewport */
+  width: 100vw;
+  display: flex; /* Use Flexbox */
+  flex-direction: column; /* Stack the children vertically */
+  justify-content: center; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+  padding-bottom: 100px;
+}
+
+.footer {
+  height: 100px;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.container2 {
+  height: 100%; /* Sets the minimum height of the container to fill the viewport */
+  width: 100vw;
+  display: flex; /* Use Flexbox */
+  flex-direction: column; /* Stack the children vertically */
+  justify-content: space-between; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+}
+
+.container3 {
+  height: 100vh; /* Sets the minimum height of the container to fill the viewport */
+  width: 100vw;
+  display: flex; /* Use Flexbox */
+  flex-direction: column; /* Stack the children vertically */
+  justify-content: center; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+}
+
+.problem-image {
+  width: 200px;
+  height: 200px;
+}
+
+.problem-section {
+  display: flex; /* Use Flexbox */
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+  padding: 75px 50px;
+  background-image: linear-gradient(90deg, #c2b7fb, #f3e1ec),
+    url(https://global-uploads.webflow.com/60c0cec90f5782a19af55867/64b638bab2301cbb30435b4e_Product.svg);
+}
+
+.problem-section2 {
+  display: flex; /* Use Flexbox */
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+  padding: 75px 50px;
+  background-image: linear-gradient(90deg, #fdcecc, #fed5a1);
+}
+
+.problem-section3 {
+  display: flex; /* Use Flexbox */
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+  padding: 75px 50px;
+  background-image: linear-gradient(50deg, #84bdf5, #ccfada);
+}
+
+.problem-section4 {
+  display: flex; /* Use Flexbox */
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+  padding: 75px 50px;
+  background-color: #f5f5f5;
+}
+
+.dashboard-btn {
+  background-color: #000;
+  color: white;
+  border-radius: 12px;
+  padding: 8px 12px;
+  text-decoration: none;
+}
+
+.content-container {
+  margin-bottom: 20px;
+}
+.email-form {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 0px;
+}
+
+.spinning-logo {
+  width: 30%; /* Adjust the width to make the logo smaller */
+  position: absolute;
+  top: 20px;
+  left: 25px;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: flex-start; /* changed from center */
+  margin: 20px 0px;
+  gap: 4px;
+}
+
+.title {
+  font-size: 4.4vw;
+  width: 80%;
+  color: #fff;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  padding: 20px 0px;
+  text-align: center;
+  font-family: "Inter", sans-serif; /* Changed from Montserrat to Inter */
+  filter: saturate(200%);
+  text-shadow: 11px 11px 8px rgba(0, 0, 0, 0.2);
+  background-image: linear-gradient(225deg, #3b88c3, #eb586d);
+  border-radius: 10rem;
+  padding-left: 2.4rem;
+  padding-right: 2.4rem;
+}
+
+.subtitle {
+  font-size: 18px;
+  width: 85%;
+  text-align: center;
+  color: #696969;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  font-family: "Montserrat", sans-serif;
+  justify-self: center;
+}
+
+.header {
+  font-size: 30px;
+  color: #000;
+  padding-top: 100px;
+  margin-bottom: 70px;
+  font-family: "Montserrat", sans-serif;
+  justify-self: center;
+}
+
+.right-icon {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.right-icon:hover {
+  color: black;
+}
+
+h3 {
+  font-size: 2rem;
+  color: #000000;
+  margin-bottom: 30px;
+  font-family: "Montserrat", sans-serif;
+}
+
+p {
+  font-size: 16px;
+  color: #000000;
+  margin-bottom: 30px;
+  font-family: "Montserrat", sans-serif;
+}
+
+.h4 {
+  font-size: 20px;
+  color: #000000;
+  margin-bottom: 30px;
+  font-family: "Montserrat", sans-serif;
+}
+
+.blurb {
+  font-size: 12px;
+  color: #fff;
+  margin-bottom: 30px;
+  font-family: "Montserrat", sans-serif;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+strong {
+  letter-spacing: 0;
+  font-size: 1.4rem;
+  color: #222;
+  font-weight: 600;
+  list-style-type: none;
+  font-family: "Inter Tight", sans-serif;
+  line-height: 1.4;
+}
+
+li {
+  background-color: #fff;
+  grid-row-gap: 1rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 24px;
+  transition: background-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  margin-left: -20px;
+  margin-right: 20px;
+}
+
+.bubble-body {
+  max-width: 60ch;
+  color: #696969;
+  letter-spacing: 0.4px;
+  flex-direction: column;
+  justify-content: flex-end;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  display: flex;
+}
+
+.form-input {
+  width: 200px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  font-family: "Montserrat", sans-serif;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.home-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  padding: 10px;
+  position: fixed;
+  width: 100%;
+  min-height: 5rem;
+  top: 0;
+  z-index: 999; /* To make sure the navbar stays on top */
+}
+
+.btn {
+  display: block;
+  margin: 0 auto;
+  padding: 15px 30px;
+  font-size: 16px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  text-decoration: none; /* Remove default underline style for anchor tags */
+  width: fit-content; /* Adjust the button width based on content */
+  font-family: "Montserrat", sans-serif;
+}
+
+.section-header {
+  font-size: 5.4em;
+  color: #000;
+}
+
+.coming-soon {
+  font-size: 22px;
+  color: #696969;
+  margin-top: -20px;
+}
+
+.section-btn {
+  margin: 15px 15px 15px 15px;
+  align-self: flex-start;
+  padding: 15px 30px;
+  font-size: 18px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  text-decoration: none; /* Remove default underline style for anchor tags */
+  width: fit-content; /* Adjust the button width based on content */
+  font-family: "Montserrat", sans-serif;
+}
+
+.btn:hover {
+  background-color: #45b9d3;
+}
+
+.login-btn-container {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mainimage {
+  width: "50%";
+  border-width: "1px";
+  border-color: "gray";
+  border-style: "solid";
+  border-radius: "10px";
+}
+
+.lpimage {
+  width: "80%";
+  border-width: "1px";
+  border-color: "gray";
+  border-style: "solid";
+  border-radius: "20px";
+}
+
+.user-info {
+  color: #000;
+  font-size: 16px;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Start of Media Query */
+@media screen and (max-width: 768px) {
+  .container1,
+  .container1b,
+  .container2,
+  .container3 {
+    width: 100%;
+    /* padding: 10px; */
+  }
+
+  .problem-section,
+  .problem-section2,
+  .problem-section3,
+  .problem-section4 {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .mainimage {
+    width: "80%";
+    border-width: "1px";
+    border-color: "gray";
+    border-style: "solid";
+    border-radius: "10px";
+  }
+
+  .lpimage {
+    width: "80%";
+    border-width: "1px";
+    border-color: "gray";
+    border-style: "solid";
+    border-radius: "10px";
+  }
+
+  .h3AndP {
+    margin-bottom: 20px;
+  }
+
+  .login-btn-container {
+    display: flow;
+    flex-direction: column;
+  }
+
+  .header,
+  h3 {
+    font-size: 24px;
+    text-align: left;
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .subtitle,
+  .h4,
+  p {
+    font-size: 16px;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .btn,
+  .form-input {
+    width: 100%;
+  }
+
+  .btn-container,
+  .login-btn-container {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .section-header {
+    font-size: 2.4em;
+    color: #000;
+  }
+}
+/* End of Media Query */
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
