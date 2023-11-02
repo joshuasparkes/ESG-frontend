@@ -44,7 +44,7 @@ function LandingPage() {
           >
             Access Dashboard
           </Link>
-          <Link
+          {/* <Link
             style={{
               padding: "20px",
               borderRadius: "8px",
@@ -57,7 +57,7 @@ function LandingPage() {
             to="/signUp"
           >
             Sign Up
-          </Link>
+          </Link> */}
         </div>
       </div>
       <div className="container2">

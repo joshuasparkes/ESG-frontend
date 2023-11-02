@@ -13,7 +13,7 @@ import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import { useNavigate } from "react-router-dom";
 // import EventIcon from "@mui/icons-material/Event";
 // import BugReportIcon from "@mui/icons-material/BugReport";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+// import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 function Navbar() {
 
@@ -98,7 +98,7 @@ function Navbar() {
               <ListItemText primary="Active Causes" />
             </ListItem>
 
-            <ListItem
+            {/* <ListItem
               button
               key="My Apps"
               onClick={() => handleNavigation("My Apps")}
@@ -107,7 +107,7 @@ function Navbar() {
                 <AddCircleIcon />
               </ListItemIcon>
               <ListItemText primary="Add Causes" />
-            </ListItem>
+            </ListItem> */}
 
             {/* <ListItem
               button
