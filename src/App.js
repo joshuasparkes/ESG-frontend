@@ -10,6 +10,7 @@ import SignUp from "./pages/signUp";
 import SignInSide from "./pages/signIn";
 import Dashboard from "./pages/dashboard";
 import ProtectedRoute from "./components/protectedRoute"; // Import the ProtectedRoute component
+import Settings from "./pages/settings";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate replace to="/landingPage" />} />
         <Route path="/landingPage" element={<LandingPage />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/signIn" element={<SignInSide />} />
         <Route element={<ProtectedRoute />}>

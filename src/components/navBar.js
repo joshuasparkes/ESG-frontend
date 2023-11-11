@@ -6,6 +6,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Logo from "../images/LogoIcon.png";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
+import SettingsIcon from "@mui/icons-material/Settings";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import { useNavigate } from "react-router-dom";
 import { auth, signOut } from "../firebase";
@@ -128,16 +129,16 @@ function Navbar() {
             <ListItemText primary="Report an Issue" />
           </ListItem> */}
 
-          {/* <ListItem
+          <ListItem
             button
             key="settings"
             onClick={() => handleNavigation("settings")}
           >
             <ListItemIcon>
-              <ToggleOnRoundedIcon />
+              <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary="My Profile" />
-          </ListItem> */}
+            <ListItemText primary="Settings" />
+          </ListItem>
 
           <ListItem button key="SignOut" onClick={handleSignOut}>
             <ListItemIcon>
