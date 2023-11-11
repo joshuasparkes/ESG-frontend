@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Typography, Container, Box, Card, CardContent } from "@mui/material";
 import Navbar from "../components/navBar";
 import TreeIcon from "@mui/icons-material/Forest"; // or your preferred icon
 import PeopleIcon from "@mui/icons-material/People"; // Icon for Beam box
-import FoodBankIcon from '@mui/icons-material/FoodBank';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import FoodBankIcon from "@mui/icons-material/FoodBank";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { AuthContext } from "../components/authContext"; // Import AuthContext
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
   const [treesPlanted, setTreesPlanted] = useState(0);
   const ecologiUsername = "michelle"; // Replace with the actual username
   const [donationDetails, setDonationDetails] = useState({
@@ -16,6 +20,12 @@ function Dashboard() {
     donorDisplayName: "",
     message: "",
   });
+  
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/signIn');
+    }
+  }, [currentUser, navigate]);
 
   useEffect(() => {
     const apiUrl = `https://public.ecologi.com/users/${ecologiUsername}/trees`;
@@ -134,7 +144,7 @@ function Dashboard() {
           Helping People{" "}
         </Typography>
         <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
-          Add this Cause{" "} <AddCircleOutlineIcon/>
+          Add this Cause <AddCircleOutlineIcon />
         </Typography>
       </CardContent>
     </Card>

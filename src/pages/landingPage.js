@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Logo from '../images/LogoIcon.png'
 
 function LandingPage() {
   const [selected, setSelected] = useState(0);
@@ -24,7 +25,14 @@ function LandingPage() {
 
   return (
     <div>
-      <div className="container1">
+    <div className="top-bar">
+      <img src={Logo} alt="Logo" className="logo" height={100}/>
+      <div className="top-bar-buttons">
+        <Link to="/signIn" className="btn btn-secondary">Sign In</Link>
+        <Link to="/signUp" className="btn btn-secondary">Sign Up</Link>
+      </div>
+    </div>
+    <div className="container1">
         <h1 className="title">ESG Project</h1>
         <h2 className="subtitle">
           Initial Landing Page Template for Upcoming ESG Project.
@@ -44,7 +52,7 @@ function LandingPage() {
           >
             Access Dashboard
           </Link>
-          {/* <Link
+          <Link
             style={{
               padding: "20px",
               borderRadius: "8px",
@@ -57,7 +65,7 @@ function LandingPage() {
             to="/signUp"
           >
             Sign Up
-          </Link> */}
+          </Link>
         </div>
       </div>
       <div className="container2">

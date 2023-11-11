@@ -5,26 +5,20 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Logo from "../images/LogoIcon.png";
-// import ToggleOnRoundedIcon from "@mui/icons-material/ToggleOnRounded";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
-import DonutSmallIcon from '@mui/icons-material/DonutSmall';
-// import AppsRoundedIcon from "@mui/icons-material/AppsRounded";
-// import { auth, signOut } from "../firebase";
+import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import { useNavigate } from "react-router-dom";
-// import EventIcon from "@mui/icons-material/Event";
-// import BugReportIcon from "@mui/icons-material/BugReport";
-// import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { auth, signOut } from "../firebase";
 
 function Navbar() {
-
   const handleSignOut = async () => {
-    // try {
-    //   await signOut(auth);
-    //   console.log("Signed out successfully");
+    try {
+      await signOut(auth);
+      console.log("Signed out successfully");
       navigate("/");
-    // } catch (error) {
-      // console.error("Error signing out:", error.message);
-    // }
+    } catch (error) {
+      console.error("Error signing out:", error.message);
+    }
   };
 
   const navigate = useNavigate();
@@ -133,7 +127,7 @@ function Navbar() {
             </ListItemIcon>
             <ListItemText primary="Report an Issue" />
           </ListItem> */}
-          
+
           {/* <ListItem
             button
             key="settings"
@@ -149,7 +143,7 @@ function Navbar() {
             <ListItemIcon>
               <ExitToAppRoundedIcon />
             </ListItemIcon>
-            <ListItemText primary="Go to Landing Page" />
+            <ListItemText primary="Sign Out" />
           </ListItem>
         </List>
       </Drawer>
