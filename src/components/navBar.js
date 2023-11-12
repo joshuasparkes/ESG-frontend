@@ -10,6 +10,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import { useNavigate } from "react-router-dom";
 import { auth, signOut } from "../firebase";
+import LinkIcon from "@mui/icons-material/Link";
 
 function Navbar() {
   const handleSignOut = async () => {
@@ -29,8 +30,8 @@ function Navbar() {
       case "Dashboard":
         navigate("/dashboard");
         break;
-      case "My Conversations":
-        navigate("/myConversations");
+      case "Integrations":
+        navigate("/integrations");
         break;
       case "My Apps":
         navigate("/myApps");
@@ -93,16 +94,16 @@ function Navbar() {
               <ListItemText primary="Active Causes" />
             </ListItem>
 
-            {/* <ListItem
+            <ListItem
               button
-              key="My Apps"
-              onClick={() => handleNavigation("My Apps")}
+              key="Integrations"
+              onClick={() => handleNavigation("Integrations")}
             >
               <ListItemIcon>
-                <AddCircleIcon />
+                <LinkIcon />
               </ListItemIcon>
-              <ListItemText primary="Add Causes" />
-            </ListItem> */}
+              <ListItemText primary="Integrations" />
+            </ListItem>
 
             {/* <ListItem
               button

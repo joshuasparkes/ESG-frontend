@@ -11,6 +11,7 @@ import SignInSide from "./pages/signIn";
 import Dashboard from "./pages/dashboard";
 import ProtectedRoute from "./components/protectedRoute"; // Import the ProtectedRoute component
 import Settings from "./pages/settings";
+import Integrations from "./pages/integrations";
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/signIn" element={<SignInSide />} />
+        <Route path="/integrations" element={<Integrations />} />
+
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
