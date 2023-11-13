@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Paper,
@@ -13,7 +13,7 @@ import Tree from "../images/Tree.png";
 import Logo from "../images/LogoIcon.png";
 
 function Integrations() {
-  const [zoomIntegrationEnabled, setZoomIntegrationEnabled] = useState(false);
+  const zoomIntegrationEnabled = useState(false);
 
 //   useEffect(() => {
 //     const unsubscribe = auth.onAuthStateChanged(async (user) => {
