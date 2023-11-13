@@ -185,6 +185,7 @@ function Dashboard() {
     return () => {
       isSubscribed = false;
     };
+     // eslint-disable-next-line
   }, [currentUser, navigate, fetchTreesPlanted]);
 
   // useEffect(() => {
