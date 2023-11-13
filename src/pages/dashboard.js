@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Typography, Container, Box, Card, CardContent } from "@mui/material";
 import Navbar from "../components/navBar";
 import {
@@ -13,17 +13,19 @@ import Tree from "../images/Tree.png";
 // import PeopleIcon from "@mui/icons-material/People"; // Icon for Beam box
 // import FoodBankIcon from "@mui/icons-material/FoodBank";
 // import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { AuthContext } from "../components/authContext"; // Import AuthContext
+// import { AuthContext } from "../components/authContext"; // Import AuthContext
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase"; // Import your Firestore instance
+import { useAuth } from "../components/authContext";
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, userProfile, updateUserProfile } = useAuth();
   const [treesPlanted, setTreesPlanted] = useState(0);
   const [open, setOpen] = useState(false);
   const [treeCount, setTreeCount] = useState(0);
+
   // const [donationDetails, setDonationDetails] = useState({
   //   amount: "0.00",
   //   currencyCode: "GBP",
@@ -47,6 +49,7 @@ function Dashboard() {
   const handlePurchase = async () => {
     if (!currentUser) {
       console.error("No user is signed in.");
+
       return;
     }
 
@@ -57,7 +60,6 @@ function Dashboard() {
     if (userDocSnapshot.exists()) {
       const userData = userDocSnapshot.data();
       const ecologiKey = userData.ecologiKey;
-
       if (!ecologiKey) {
         console.error("Ecologi API key is not set for the user.");
         return;
@@ -99,67 +101,91 @@ function Dashboard() {
     }
   };
 
-  const fetchTreesPlanted = useCallback(async () => {
-    if (!currentUser) {
-      console.log("No user is signed in.");
-      return;
-    }
-
-    // Fetch the user's document to get the Ecologi API key and username
-    const userDocRef = doc(db, "users", currentUser.uid);
-    const userDocSnapshot = await getDoc(userDocRef);
-
-    if (userDocSnapshot.exists()) {
-      const userData = userDocSnapshot.data();
-      const ecologiKey = userData.ecologiKey;
-      const ecologiUsername = userData.ecologiUsername;
-
-      if (!ecologiKey || !ecologiUsername) {
-        console.error("Ecologi API key or username is not set for the user.");
+  const fetchTreesPlanted = useCallback(
+    async (isSubscribed) => {
+      if (!currentUser) {
+        console.log("No user is signed in.");
         return;
       }
 
-      // Construct the API URL using the username
-      const apiUrl = `https://public.ecologi.com/users/${ecologiUsername}/trees`;
+      // Fetch the user's document to get the Ecologi API key and username
+      const userDocRef = doc(db, "users", currentUser.uid);
+      const userDocSnapshot = await getDoc(userDocRef);
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data();
+        updateUserProfile(userData);
+        const ecologiKey = userProfile ? userProfile.ecologiKey : null;
+        const ecologiUsername = userProfile
+          ? userProfile.ecologiUsername
+          : null;
 
-      try {
-        const response = await fetch(apiUrl, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${ecologiKey}`,
-            Accept: "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (!ecologiUsername) {
+          console.error("Ecologi API key or username is not set for the user.");
+          return;
         }
 
-        const data = await response.json();
-        setTreesPlanted(data.total);
-      } catch (error) {
-        console.error("Error fetching the number of trees planted:", error);
+        if (!ecologiKey) {
+          console.error("Ecologi API key or username is not set for the user.");
+          return;
+        }
+
+        const apiUrl = `https://public.ecologi.com/users/${ecologiUsername}/trees`;
+
+        try {
+          const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${ecologiKey}`,
+              Accept: "application/json",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (isSubscribed) {
+            setTreesPlanted(data.total);
+          }
+        } catch (error) {
+          console.error("Error fetching the number of trees planted:", error);
+        }
+      } else {
+        console.log("User document does not exist.");
       }
+    },
+    // eslint-disable-next-line
+    [currentUser]
+  );
+
+  useEffect(() => {
+    let isSubscribed = true;
+  
+    const fetchUserProfile = async () => {
+      if (currentUser && currentUser.uid) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnapshot = await getDoc(userDocRef);
+        if (userDocSnapshot.exists()) {
+          const userData = userDocSnapshot.data();
+          updateUserProfile(userData);
+          if (userData.ecologiKey && userData.ecologiUsername && isSubscribed) {
+            fetchTreesPlanted(userData.ecologiKey, userData.ecologiUsername, isSubscribed);
+          }
+        }
+      }
+    };
+  
+    if (currentUser) {
+      fetchUserProfile();
     } else {
-      console.log("User document does not exist.");
-    }
-  }, [currentUser]);
-
-  useEffect(() => {
-    if (!currentUser) {
       navigate("/signIn");
-      return;
     }
-    fetchTreesPlanted();
-  }, [currentUser, navigate, fetchTreesPlanted]); // Include fetchTreesPlanted in dependency array
-
-  useEffect(() => {
-    if (!currentUser) {
-      navigate("/signIn");
-      return;
-    }
-    fetchTreesPlanted();
-  }, [currentUser, navigate, fetchTreesPlanted]); // Include fetchTreesPlanted in dependency array
+  
+    return () => {
+      isSubscribed = false;
+    };
+  }, [currentUser, navigate, fetchTreesPlanted]);
 
   // useEffect(() => {
   //   const donationId = "D189693899"; // Replace with your actual donation ID
@@ -209,13 +235,7 @@ function Dashboard() {
       }}
     >
       <CardContent>
-        <img
-          width={"auto"}
-          height={"100px"}
-          style={{}}
-          src={Tree}
-          alt="Softkraft process"
-        />{" "}
+        <img width={"auto"} height={"100px"} src={Tree} alt="Ecologi" />
         <Typography variant="h5" component="div">
           Ecologi
         </Typography>
@@ -225,22 +245,43 @@ function Dashboard() {
         <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
           {treesPlanted.toLocaleString()}
         </Typography>
-        <Button
-          variant="contained"
-          disableElevation
-          style={{
-            margin: "10px",
-            color: "black",
-            borderColor: "black",
-            borderWidth: "1px",
-            borderStyle: "solid",
-            backgroundColor: "white",
-            borderRadius: "8px",
-          }}
-          onClick={handlePurchaseClick}
-        >
-          Plant More Trees
-        </Button>
+        {userProfile && userProfile.ecologiKey ? (
+          <Button
+            variant="contained"
+            disableElevation
+            style={{
+              margin: "10px",
+              color: "black",
+              borderColor: "black",
+              borderWidth: "1px",
+              borderStyle: "solid",
+              backgroundColor: "white",
+              borderRadius: "8px",
+            }}
+            onClick={handlePurchaseClick}
+          >
+            Plant More Trees
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            disableElevation
+            style={{
+              margin: "10px",
+              color: "black",
+              borderColor: "black",
+              borderWidth: "1px",
+              borderStyle: "solid",
+              backgroundColor: "white",
+              borderRadius: "8px",
+            }}
+            onClick={() => {
+              window.location.href = "/integrations";
+            }} // Redirect to the integrations page
+          >
+            Connect to Ecologi
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

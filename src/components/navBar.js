@@ -11,7 +11,8 @@ import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import { useNavigate } from "react-router-dom";
 import { auth, signOut } from "../firebase";
 import LinkIcon from "@mui/icons-material/Link";
-import BugReportIcon from '@mui/icons-material/BugReport';
+import BugReportIcon from "@mui/icons-material/BugReport";
+import SchoolIcon from '@mui/icons-material/School';
 
 function Navbar() {
   const handleSignOut = async () => {
@@ -40,8 +41,8 @@ function Navbar() {
       case "Report an Issue":
         navigate("/report");
         break;
-      case "Calendar":
-        navigate("/calendar");
+      case "Learn":
+        navigate("/learn");
         break;
       case "settings":
         navigate("/settings");
@@ -88,9 +89,7 @@ function Navbar() {
               onClick={() => handleNavigation("Dashboard")}
             >
               <ListItemIcon>
-                <DonutSmallIcon
-                // style={{ color: selectedPage === "Dashboard" ? "#4CAB61" : "#727272" }}
-                />
+                <DonutSmallIcon />
               </ListItemIcon>
               <ListItemText primary="Active Causes" />
             </ListItem>
@@ -106,16 +105,16 @@ function Navbar() {
               <ListItemText primary="Integrations" />
             </ListItem>
 
-            {/* <ListItem
+            <ListItem
               button
-              key="Calendar"
-              onClick={() => handleNavigation("Calendar")}
+              key="Learn"
+              onClick={() => handleNavigation("Learn")}
             >
               <ListItemIcon>
-                <EventIcon />
+                <SchoolIcon />
               </ListItemIcon>
-              <ListItemText primary="Meetings" />
-            </ListItem> */}
+              <ListItemText primary="Learn About ESG" />
+            </ListItem>
           </List>
         </div>
 
