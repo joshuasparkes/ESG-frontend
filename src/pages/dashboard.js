@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Typography, Container, Box, Card, CardContent } from "@mui/material";
 import Navbar from "../components/navBar";
-import TreeIcon from "@mui/icons-material/Forest"; // or your preferred icon
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
+import Tree from "../images/Tree.png";
 import PeopleIcon from "@mui/icons-material/People"; // Icon for Beam box
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -12,6 +20,8 @@ function Dashboard() {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
   const [treesPlanted, setTreesPlanted] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [treeCount, setTreeCount] = useState(0);
   const ecologiUsername = "michelle"; // Replace with the actual username
   const [donationDetails, setDonationDetails] = useState({
     amount: "0.00",
@@ -20,12 +30,30 @@ function Dashboard() {
     donorDisplayName: "",
     message: "",
   });
-  
+
   useEffect(() => {
     if (!currentUser) {
-      navigate('/signIn');
+      navigate("/signIn");
     }
   }, [currentUser, navigate]);
+
+  const handlePurchaseClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleTreeCountChange = (event) => {
+    setTreeCount(event.target.value);
+  };
+
+  const handlePurchase = () => {
+    // Implement API call logic to purchase trees
+    // Close the dialog after purchase
+    setOpen(false);
+  };
 
   useEffect(() => {
     const apiUrl = `https://public.ecologi.com/users/${ecologiUsername}/trees`;
@@ -85,34 +113,74 @@ function Dashboard() {
   }, []);
 
   const ecologiDashboardBox = (
-    <Card sx={{ width: 350, height: 300, margin: 2, textAlign: "center" }}>
+    <Card
+      elevation={0}
+      sx={{
+        border: 2,
+        borderWidth: 1,
+        borderRadius: 8,
+        width: 350,
+        height: 300,
+        margin: 2,
+        textAlign: "center",
+      }}
+    >
       <CardContent>
-        <TreeIcon style={{ fontSize: "100px", color: "green" }} />
+        <img
+          width={"auto"}
+          height={"100px"}
+          style={{}}
+          src={Tree}
+          alt="Softkraft process"
+        />{" "}
         <Typography variant="h5" component="div">
           Ecologi
         </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+        <Typography sx={{ mt: 1.5 }} color="text.secondary">
           Trees Planted
         </Typography>
         <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
           {treesPlanted.toLocaleString()}
         </Typography>
-        <Typography sx={{ mb: 1, fontSize: 12 }} color="text.secondary">
-          Developer note: This number is fetched from a random user on Ecologi
-          API
-        </Typography>
+        <Button
+          variant="contained"
+          disableElevation
+          style={{
+            margin: "10px",
+            color: "black",
+            borderColor: "black",
+            borderWidth: "1px",
+            borderStyle: "solid",
+            backgroundColor: "white",
+            borderRadius: "8px",
+          }}
+          onClick={handlePurchaseClick}
+        >
+          Plant More Trees
+        </Button>
       </CardContent>
     </Card>
   );
 
   const donationDashboardBox = (
-    <Card sx={{ width: 350, height: 300, margin: 2, textAlign: "center" }}>
+    <Card
+      elevation={0}
+      sx={{
+        border: 2,
+        borderWidth: 1,
+        borderRadius: 8,
+        width: 350,
+        height: 300,
+        margin: 2,
+        textAlign: "center",
+      }}
+    >
       <CardContent>
         <PeopleIcon style={{ fontSize: "100px", color: "blue" }} />
         <Typography variant="h5" component="div">
-          Donations
+          JustGiving
         </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+        <Typography sx={{ mt: 1.5 }} color="text.secondary">
           Total Donated
         </Typography>
         <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
@@ -134,13 +202,24 @@ function Dashboard() {
   );
 
   const FakeCharityBox = (
-    <Card sx={{ width: 350, height: 300, margin: 2, textAlign: "center" }}>
+    <Card
+      elevation={0}
+      sx={{
+        border: 2,
+        borderWidth: 1,
+        borderRadius: 8,
+        width: 350,
+        height: 300,
+        margin: 2,
+        textAlign: "center",
+      }}
+    >
       <CardContent>
         <FoodBankIcon style={{ fontSize: "100px", color: "blue" }} />
         <Typography variant="h5" component="div">
           Mock Charity
         </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+        <Typography sx={{ mt: 1.5 }} color="text.secondary">
           Helping People{" "}
         </Typography>
         <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
@@ -148,6 +227,31 @@ function Dashboard() {
         </Typography>
       </CardContent>
     </Card>
+  );
+
+  const purchaseDialog = (
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Purchase Trees</DialogTitle>
+      <DialogContent>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="treeCount"
+          label="Number of Trees"
+          type="number"
+          fullWidth
+          variant="standard"
+          value={treeCount}
+          onChange={handleTreeCountChange}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handlePurchase} variant="contained" color="primary">
+          Purchase
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 
   return (
@@ -179,6 +283,7 @@ function Dashboard() {
         </Box>
         <Box style={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
           {ecologiDashboardBox}
+          {purchaseDialog}
           {donationDashboardBox}
           {FakeCharityBox}
         </Box>

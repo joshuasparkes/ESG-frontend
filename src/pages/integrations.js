@@ -1,59 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
-  Paper,
-  Typography,
   Container,
-  Switch,
-  FormControlLabel,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import Navbar from "../components/navBar";
-// import { auth, doc, getDoc, db } from "../firebase";
-import Tree from "../images/Tree.png";
-import Logo from "../images/LogoIcon.png";
+import { AuthContext } from "../components/authContext"; // Import AuthContext
+// import Tree from "../images/Tree.png";
+// import Logo from "../images/LogoIcon.png";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { db } from "../firebase"; // Import your Firestore instance
 
 function Integrations() {
-  const zoomIntegrationEnabled = useState(false);
+  const { currentUser } = useContext(AuthContext);
+  const [apiKey, setApiKey] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
-//   useEffect(() => {
-//     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-//       if (user) {
-//         const userRef = doc(db, "users", user.uid);
-//         const docSnapshot = await getDoc(userRef);
-//         if (docSnapshot.exists()) {
-//           const zoomUserId = docSnapshot.data().zoom_user_id;
-//           if (zoomUserId) {
-//             setZoomIntegrationEnabled(true);
-//           }
-//         }
-//       }
-//     });
-//     return () => unsubscribe();
-//   }, []);
+  useEffect(() => {
+    // Fetch the existing API key when the component loads
+    const fetchApiKey = async () => {
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          setApiKey(userDoc.data().ecologiKey || "");
+        }
+      }
+    };
 
-//   const handleZoomToggle = () => {
-//     setZoomIntegrationEnabled(!zoomIntegrationEnabled);
-//   };
+    fetchApiKey();
+  }, [currentUser]);
 
-//   const handleConnectToZoom = () => {
-//     const user = auth.currentUser;
-//     if (user) {
-//       setZoomIntegrationEnabled(true);
-//       const firebaseUid = user.uid; // Fetch the Firebase UID
+  const saveEcologiKey = async (apiKey) => {
+    if (!currentUser) {
+      console.error("No user is signed in.");
+      return;
+    }
 
-//       // Log or debug the firebaseUid to make sure it's not null or undefined
-//       console.log("Firebase UID:", firebaseUid);
+    const userDocRef = doc(db, "users", currentUser.uid); // Reference to the user's document
+    try {
+      await updateDoc(userDocRef, { ecologiKey: apiKey });
+      console.log("Ecologi API Key saved successfully.");
+      setOpenSnackbar(true); // Open the snackbar on successful save
+    } catch (error) {
+      console.error("Error saving Ecologi API Key:", error);
+    }
+  };
 
-//       const zoomAuthorizationUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=ybKPAft6SSyBirKyRpWw&redirect_uri=https://therapinsights.onrender.com/zoom/callback&state=${firebaseUid}`;
-
-//       // Log the complete URL to debug
-//       console.log("Zoom Authorization URL:", zoomAuthorizationUrl);
-
-//       window.location.href = zoomAuthorizationUrl;
-//     } else {
-//       console.log("User not authenticated.");
-//     }
-//   };
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
   return (
     <div>
@@ -73,114 +77,39 @@ function Integrations() {
           >
             Integrations
           </Typography>
-
-          <Paper elevation={1}>
-            <Box p={4} display="flex" flexDirection="row" alignItems="center">
-              <img
-                width={"auto"}
-                height={"100px"}
-                style={{}}
-                src={Tree}
-                alt="Softkraft process"
-              />
-              {zoomIntegrationEnabled ? (
-                <span
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: "#fff",
-                    color: "#6D7580",
-                    padding: "10px",
-                    border: "2px solid, #6D7580",
-                    borderRadius: "8px",
-                  }}
-                >
-                  {" "}
-                  Connected{" "}
-                </span>
-              ) : (
-                <span
-                //   onClick={handleConnectToZoom}
-                  style={{
-                    marginLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#6D7580",
-                    color: "white",
-                    padding: "10px",
-                    borderRadius: "8px",
-                  }}
-                >
-                  Connect to Ecologi
-                </span>
-              )}
-              <Box style={{ marginLeft: "30px" }} mb={2} mt={2}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={zoomIntegrationEnabled}
-                    //   onChange={handleZoomToggle}
-                      name="zoomIntegration"
-                      color="primary"
-                    />
-                  }
-                />
-              </Box>
-            </Box>
-          </Paper>
-
-          <Paper elevation={1}>
-            <Box p={4} display="flex" flexDirection="row" alignItems="center">
-              <img
-                width={"auto"}
-                height={"100px"}
-                style={{}}
-                src={Logo}
-                alt="Softkraft process"
-              />
-              {zoomIntegrationEnabled ? (
-                <span
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: "#fff",
-                    color: "#6D7580",
-                    padding: "10px",
-                    border: "2px solid, #6D7580",
-                    borderRadius: "8px",
-                  }}
-                >
-                  {" "}
-                  Connected{" "}
-                </span>
-              ) : (
-                <span
-                //   onClick={handleConnectToZoom}
-                  style={{
-                    marginLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#6D7580",
-                    color: "white",
-                    padding: "10px",
-                    borderRadius: "8px",
-                  }}
-                >
-                  Connect to JustGiving
-                </span>
-              )}
-              <Box style={{ marginLeft: "30px" }} mb={2} mt={2}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={zoomIntegrationEnabled}
-                    //   onChange={handleZoomToggle}
-                      name="zoomIntegration"
-                      color="primary"
-                    />
-                  }
-                />
-              </Box>
-            </Box>
+          <Paper elevation={0}>
+            <Typography variant="h5">Ecologi</Typography>
+            <TextField
+              label="Ecologi API Key"
+              fullWidth
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              margin="normal"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => saveEcologiKey(apiKey)}
+            >
+              Save API Key
+            </Button>
           </Paper>
         </Box>
       </Container>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Ecologi API Key saved successfully!
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
