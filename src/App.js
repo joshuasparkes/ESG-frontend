@@ -12,6 +12,7 @@ import Dashboard from "./pages/dashboard";
 import ProtectedRoute from "./components/protectedRoute"; // Import the ProtectedRoute component
 import Settings from "./pages/settings";
 import Integrations from "./pages/integrations";
+import Report from "./pages/report";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/signIn" element={<SignInSide />} />
         <Route path="/integrations" element={<Integrations />} />
-
+        <Route path="/report" element={<Report />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Navbar from "../components/navBar";
 import { AuthContext } from "../components/authContext"; // Import AuthContext
-// import Tree from "../images/Tree.png";
+import Tree from "../images/Tree.png";
 // import Logo from "../images/LogoIcon.png";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase"; // Import your Firestore instance
@@ -82,8 +82,20 @@ function Integrations() {
           >
             Integrations
           </Typography>
-          <Paper elevation={0} style={{ border: "1px solid #ddd", padding: '20px' }}>
-            <Typography variant="h5">Ecologi</Typography>
+          <Paper
+            elevation={0}
+            style={{ border: "1px solid #ddd", padding: "20px" }}
+          >
+            <Typography variant="h5">
+              <img
+                width={"auto"}
+                height={"50px"}
+                style={{}}
+                src={Tree}
+                alt="Softkraft process"
+              />
+              Ecologi
+            </Typography>
             <TextField
               label="Ecologi Username"
               fullWidth

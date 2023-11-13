@@ -11,6 +11,7 @@ import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import { useNavigate } from "react-router-dom";
 import { auth, signOut } from "../firebase";
 import LinkIcon from "@mui/icons-material/Link";
+import BugReportIcon from '@mui/icons-material/BugReport';
 
 function Navbar() {
   const handleSignOut = async () => {
@@ -37,7 +38,7 @@ function Navbar() {
         navigate("/myApps");
         break;
       case "Report an Issue":
-        navigate("/contact");
+        navigate("/report");
         break;
       case "Calendar":
         navigate("/calendar");
@@ -119,7 +120,7 @@ function Navbar() {
         </div>
 
         <List style={{ width: "100%" }}>
-          {/* <ListItem
+          <ListItem
             button
             key="Report an Issue"
             onClick={() => handleNavigation("Report an Issue")}
@@ -128,7 +129,7 @@ function Navbar() {
               <BugReportIcon />
             </ListItemIcon>
             <ListItemText primary="Report an Issue" />
-          </ListItem> */}
+          </ListItem>
 
           <ListItem
             button
