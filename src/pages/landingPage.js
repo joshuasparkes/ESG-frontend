@@ -33,7 +33,7 @@ function LandingPage() {
       </div>
     </div>
     <div className="container1">
-        <h1 className="title">ESG Project</h1>
+        <h1 className="title">Tracsr</h1>
         <h2 className="subtitle">
           Initial Landing Page Template for Upcoming ESG Project.
         </h2>
