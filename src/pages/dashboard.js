@@ -10,14 +10,12 @@ import {
   TextField,
 } from "@mui/material";
 import Tree from "../images/Tree.png";
-// import PeopleIcon from "@mui/icons-material/People"; // Icon for Beam box
-// import FoodBankIcon from "@mui/icons-material/FoodBank";
-// import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-// import { AuthContext } from "../components/authContext"; // Import AuthContext
+import PeopleIcon from "@mui/icons-material/People"; // Icon for Beam box
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase"; // Import your Firestore instance
 import { useAuth } from "../components/authContext";
+import PieChartComponent from "../components/pie";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -25,6 +23,7 @@ function Dashboard() {
   const [treesPlanted, setTreesPlanted] = useState(0);
   const [open, setOpen] = useState(false);
   const [treeCount, setTreeCount] = useState(0);
+  const [donationDetails, setDonationDetails] = useState(0);
 
   // const [donationDetails, setDonationDetails] = useState({
   //   amount: "0.00",
@@ -161,7 +160,7 @@ function Dashboard() {
 
   useEffect(() => {
     let isSubscribed = true;
-  
+
     const fetchUserProfile = async () => {
       if (currentUser && currentUser.uid) {
         const userDocRef = doc(db, "users", currentUser.uid);
@@ -170,57 +169,61 @@ function Dashboard() {
           const userData = userDocSnapshot.data();
           updateUserProfile(userData);
           if (userData.ecologiKey && userData.ecologiUsername && isSubscribed) {
-            fetchTreesPlanted(userData.ecologiKey, userData.ecologiUsername, isSubscribed);
+            fetchTreesPlanted(
+              userData.ecologiKey,
+              userData.ecologiUsername,
+              isSubscribed
+            );
           }
         }
       }
     };
-  
+
     if (currentUser) {
       fetchUserProfile();
     } else {
       navigate("/signIn");
     }
-  
+
     return () => {
       isSubscribed = false;
     };
-     // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [currentUser, navigate, fetchTreesPlanted]);
 
-  // useEffect(() => {
-  //   const donationId = "D189693899"; // Replace with your actual donation ID
-  //   const appID = "169c43da";
-  //   const justGivingApiUrl = `https://api.staging.justgiving.com/${appID}/v1/donation/${donationId}`;
+  useEffect(() => {
+    const donationId = "D189693899"; // Replace with your actual donation ID
+    const appID = "169c43da";
+    const justGivingApiUrl = `https://api.staging.justgiving.com/${appID}/v1/donation/${donationId}`;
 
-  //   const fetchDonationDetails = async () => {
-  //     try {
-  //       const response = await fetch(justGivingApiUrl, {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-type": "application/json",
-  //           Accept: "application/json",
-  //           Authorization: `Basic ${btoa("joshsparkes:1Time4UrMind!")}`, // Replace with your JustGiving username and password
-  //         },
-  //       });
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       const data = await response.json();
-  //       setDonationDetails({
-  //         amount: data.amount,
-  //         currencyCode: data.currencyCode,
-  //         donationDate: data.donationDate,
-  //         donorDisplayName: data.donorDisplayName,
-  //         message: data.message,
-  //       });
-  //     } catch (error) {
-  //       console.error("Error fetching donation details:", error);
-  //     }
-  //   };
+    const fetchDonationDetails = async () => {
+      try {
+        const response = await fetch(justGivingApiUrl, {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+            Accept: "application/json",
+            Authorization: `Basic ${btoa("joshsparkes:1Time4UrMind!")}`, // Replace with your JustGiving username and password
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setDonationDetails({
+          amount: data.amount,
+          currencyCode: data.currencyCode,
+          donationDate: data.donationDate,
+          donorDisplayName: data.donorDisplayName,
+          message: data.message,
+        });
+      } catch (error) {
+        console.error("Error fetching donation details:", error);
+      }
+    };
 
-  //   fetchDonationDetails();
-  // }, []);
+    fetchDonationDetails();
+  }, []);
 
   const ecologiDashboardBox = (
     <Card
@@ -287,44 +290,44 @@ function Dashboard() {
     </Card>
   );
 
-  // const donationDashboardBox = (
-  //   <Card
-  //     elevation={0}
-  //     sx={{
-  //       border: 2,
-  //       borderWidth: 1,
-  //       borderRadius: 8,
-  //       width: 350,
-  //       height: 300,
-  //       margin: 2,
-  //       textAlign: "center",
-  //     }}
-  //   >
-  //     <CardContent>
-  //       <PeopleIcon style={{ fontSize: "100px", color: "blue" }} />
-  //       <Typography variant="h5" component="div">
-  //         JustGiving
-  //       </Typography>
-  //       <Typography sx={{ mt: 1.5 }} color="text.secondary">
-  //         Total Donated
-  //       </Typography>
-  //       <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
-  //         {donationDetails.currencyCode} {donationDetails.amount}
-  //         {donationDetails.donationDate}
-  //       </Typography>
-  //       {donationDetails.donorDisplayName && (
-  //         <Typography sx={{ mt: 2 }} color="text.secondary">
-  //           Last donation by: {donationDetails.donorDisplayName}
-  //         </Typography>
-  //       )}
-  //       {donationDetails.message && (
-  //         <Typography sx={{ mt: 1 }} color="text.secondary">
-  //           Message: "{donationDetails.message}"
-  //         </Typography>
-  //       )}
-  //     </CardContent>
-  //   </Card>
-  // );
+  const donationDashboardBox = (
+    <Card
+      elevation={0}
+      sx={{
+        border: 2,
+        borderWidth: 1,
+        borderRadius: 8,
+        width: 350,
+        height: 300,
+        margin: 2,
+        textAlign: "center",
+      }}
+    >
+      <CardContent>
+        <PeopleIcon style={{ fontSize: "100px", color: "blue" }} />
+        <Typography variant="h5" component="div">
+          JustGiving
+        </Typography>
+        <Typography sx={{ mt: 1.5 }} color="text.secondary">
+          Total Donated
+        </Typography>
+        <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
+          {donationDetails.currencyCode} {donationDetails.amount}
+          {donationDetails.donationDate}
+        </Typography>
+        {donationDetails.donorDisplayName && (
+          <Typography sx={{ mt: 2 }} color="text.secondary">
+            Last donation by: {donationDetails.donorDisplayName}
+          </Typography>
+        )}
+        {donationDetails.message && (
+          <Typography sx={{ mt: 1 }} color="text.secondary">
+            Message: "{donationDetails.message}"
+          </Typography>
+        )}
+      </CardContent>
+    </Card>
+  );
 
   // const FakeCharityBox = (
   //   <Card
@@ -409,8 +412,8 @@ function Dashboard() {
         <Box style={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
           {ecologiDashboardBox}
           {purchaseDialog}
-          {/* {donationDashboardBox} */}
-          {/* {FakeCharityBox} */}
+          {donationDashboardBox}
+          <PieChartComponent />
         </Box>
       </Container>
     </div>
