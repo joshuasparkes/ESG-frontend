@@ -41,7 +41,7 @@ const PieChartComponent = () => {
     <div style={{ width: "300px", height: "300px" }}>
       {" "}
       {/* Add a wrapper with specified dimensions */}
-      <Typography>Your Allocation</Typography>
+      <Typography variant="h4">Your Allocation</Typography>
       <Pie data={data} options={options} />
     </div>
   );
