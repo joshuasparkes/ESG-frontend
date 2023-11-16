@@ -12,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { auth, signOut } from "../firebase";
 import LinkIcon from "@mui/icons-material/Link";
 import BugReportIcon from "@mui/icons-material/BugReport";
-import SchoolIcon from '@mui/icons-material/School';
+import SchoolIcon from "@mui/icons-material/School";
+import ArticleIcon from '@mui/icons-material/Article';
 
 function Navbar() {
   const handleSignOut = async () => {
@@ -46,6 +47,9 @@ function Navbar() {
         break;
       case "settings":
         navigate("/settings");
+        break;
+      case "Report":
+        navigate("/report");
         break;
       default:
         break;
@@ -91,7 +95,7 @@ function Navbar() {
               <ListItemIcon>
                 <DonutSmallIcon />
               </ListItemIcon>
-              <ListItemText primary="Active Causes" />
+              <ListItemText primary="Allocation" />
             </ListItem>
 
             <ListItem
@@ -103,6 +107,17 @@ function Navbar() {
                 <LinkIcon />
               </ListItemIcon>
               <ListItemText primary="Integrations" />
+            </ListItem>
+
+            <ListItem
+              button
+              key="Report"
+              onClick={() => handleNavigation("Report")}
+            >
+              <ListItemIcon>
+                <ArticleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Create Report" />
             </ListItem>
 
             <ListItem

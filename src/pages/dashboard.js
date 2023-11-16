@@ -10,12 +10,15 @@ import {
   TextField,
 } from "@mui/material";
 import Tree from "../images/Tree.png";
-import PeopleIcon from "@mui/icons-material/People"; // Icon for Beam box
+import JustGiving from "../images/JustGiving.jpg";
+import Crisis from "../images/crisis.jpeg";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase"; // Import your Firestore instance
 import { useAuth } from "../components/authContext";
 import PieChartComponent from "../components/pie";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -23,16 +26,21 @@ function Dashboard() {
   const [treesPlanted, setTreesPlanted] = useState(0);
   const [open, setOpen] = useState(false);
   const [treeCount, setTreeCount] = useState(0);
-  const [donationDetails, setDonationDetails] = useState(0);
+  const [userId, setUserId] = useState(null);
 
-  // const [donationDetails, setDonationDetails] = useState({
-  //   amount: "0.00",
-  //   currencyCode: "GBP",
-  //   donationDate: "",
-  //   donorDisplayName: "",
-  //   message: "",
-  // });
-
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, set the user ID
+        setUserId(user.uid);
+      } else {
+        // User is signed out
+        // Handle the signed-out state as appropriate
+      }
+    });
+  }, []);
+  
   const handlePurchaseClick = () => {
     setOpen(true);
   };
@@ -209,14 +217,14 @@ function Dashboard() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
-        setDonationDetails({
-          amount: data.amount,
-          currencyCode: data.currencyCode,
-          donationDate: data.donationDate,
-          donorDisplayName: data.donorDisplayName,
-          message: data.message,
-        });
+        // const data = await response.json();
+        // setDonationDetails({
+        //   amount: data.amount,
+        //   currencyCode: data.currencyCode,
+        //   donationDate: data.donationDate,
+        //   donorDisplayName: data.donorDisplayName,
+        //   message: data.message,
+        // });
       } catch (error) {
         console.error("Error fetching donation details:", error);
       }
@@ -229,64 +237,59 @@ function Dashboard() {
     <Card
       elevation={0}
       sx={{
-        border: 2,
-        borderWidth: 1,
-        borderRadius: 8,
-        width: 300,
-        height: 300,
-        margin: 2,
-        textAlign: "center",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        border: 1,
+        borderRadius: 3,
+        width: "85%",
+        borderColor: 'darkgray',
+        height: 130,
+        margin: 0,
+        padding: "20px",
       }}
     >
-      <CardContent>
-        <img width={"auto"} height={"100px"} src={Tree} alt="Ecologi" />
+      <img
+        width={"100"}
+        height={"auto"}
+        src={Tree}
+        alt="Ecologi"
+        style={{ marginRight: "16px" }}
+      />
+      <CardContent style={{ flexGrow: 1, textAlign: "left" }}>
         <Typography variant="h5" component="div">
           Ecologi
         </Typography>
+        <Typography variant="body" component="div">
+          Renewable Energy
+        </Typography>
+        <Typography sx={{ mt: 1.5 }} color="text.secondary">
+          Monthly Allocation: £2,000
+        </Typography>
+      </CardContent>
+      <div style={{ textAlign: "right" }}>
         <Typography sx={{ mt: 1.5 }} color="text.secondary">
           Trees Planted
         </Typography>
         <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
           {treesPlanted.toLocaleString()}
         </Typography>
-        {userProfile && userProfile.ecologiKey ? (
-          <Button
-            variant="contained"
-            disableElevation
-            style={{
-              margin: "10px",
-              color: "black",
-              borderColor: "black",
-              borderWidth: "1px",
-              borderStyle: "solid",
-              backgroundColor: "white",
-              borderRadius: "8px",
-            }}
-            onClick={handlePurchaseClick}
-          >
-            Plant More Trees
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            disableElevation
-            style={{
-              margin: "10px",
-              color: "black",
-              borderColor: "black",
-              borderWidth: "1px",
-              borderStyle: "solid",
-              backgroundColor: "white",
-              borderRadius: "8px",
-            }}
-            onClick={() => {
-              window.location.href = "/integrations";
-            }} // Redirect to the integrations page
-          >
-            Connect to Ecologi
-          </Button>
-        )}
-      </CardContent>
+        <Button
+          variant="contained"
+          disableElevation
+          style={{
+            color: "black",
+            borderColor: "black",
+            borderWidth: "1px",
+            borderStyle: "solid",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            fontSize: "12px",
+          }}
+        onClick={handlePurchaseClick}>
+          Plant More Trees
+        </Button>
+      </div>
     </Card>
   );
 
@@ -294,68 +297,120 @@ function Dashboard() {
     <Card
       elevation={0}
       sx={{
-        border: 2,
-        borderWidth: 1,
-        borderRadius: 8,
-        width: 300,
-        height: 300,
-        margin: 2,
-        textAlign: "center",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        border: 1,
+        borderColor: 'darkgray',
+        borderRadius: 3,
+        width: "85%",
+        height: 130,
+        margin: 1,
+        padding: "20px",
       }}
     >
-      <CardContent>
-        <PeopleIcon style={{ fontSize: "100px", color: "blue" }} />
+      <img
+        width={"100"}
+        height={"auto"}
+        src={JustGiving}
+        alt="JustGiving"
+        style={{ marginRight: "16px" }}
+      />
+      <CardContent style={{ flexGrow: 1, textAlign: "left" }}>
         <Typography variant="h5" component="div">
           JustGiving
         </Typography>
+        <Typography variant="body" component="div">
+          Diversity & Inclusion
+        </Typography>
+        <Typography sx={{ mt: 1.5 }} color="text.secondary">
+          Monthly Allocation: £3,500
+        </Typography>
+      </CardContent>
+      <div style={{ textAlign: "right" }}>
         <Typography sx={{ mt: 1.5 }} color="text.secondary">
           Total Donated
         </Typography>
         <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
-          {donationDetails.currencyCode} {donationDetails.amount}
-          {donationDetails.donationDate}
+          £12,000
         </Typography>
-        {donationDetails.donorDisplayName && (
-          <Typography sx={{ mt: 2 }} color="text.secondary">
-            Last donation by: {donationDetails.donorDisplayName}
-          </Typography>
-        )}
-        {donationDetails.message && (
-          <Typography sx={{ mt: 1 }} color="text.secondary">
-            Message: "{donationDetails.message}"
-          </Typography>
-        )}
-      </CardContent>
+        <Button
+          variant="contained"
+          disableElevation
+          style={{
+            color: "black",
+            borderColor: "black",
+            borderWidth: "1px",
+            borderStyle: "solid",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            fontSize: "12px",
+          }}
+        >
+          Donate More
+        </Button>
+      </div>
     </Card>
   );
 
-  // const FakeCharityBox = (
-  //   <Card
-  //     elevation={0}
-  //     sx={{
-  //       border: 2,
-  //       borderWidth: 1,
-  //       borderRadius: 8,
-  //       width: 350,
-  //       height: 300,
-  //       margin: 2,
-  //       textAlign: "center",
-  //     }}
-  //   >
-  //     <CardContent>
-  //       <FoodBankIcon style={{ fontSize: "100px", color: "blue" }} />
-  //       <Typography variant="h5" component="div">
-  //         Mock Charity
-  //       </Typography>
-  //       <Typography sx={{ mt: 1.5 }} color="text.secondary">
-  //         Helping People{" "}
-  //       </Typography>
-  //       <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
-  //         Add this Cause <AddCircleOutlineIcon />
-  //       </Typography>
-  //     </CardContent>
-  //   </Card>
-  // );
+  const crisisBox = (
+    <Card
+      elevation={0}
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        border: 1,
+        borderColor: 'darkgray',
+        borderRadius: 3,
+        width: "85%",
+        height: 130,
+        padding: "20px",
+      }}
+    >
+      <img
+        width={"100"}
+        height={"auto"}
+        src={Crisis}
+        alt="Crisis"
+        style={{ marginRight: "16px" }}
+      />
+      <CardContent style={{ flexGrow: 1, textAlign: "left" }}>
+        <Typography variant="h5" component="div">
+          Crisis
+        </Typography>
+        <Typography variant="body" component="div">
+          Homelessness
+        </Typography>
+        <Typography sx={{ mt: 1.5 }} color="text.secondary">
+          Monthly Allocation: £2,000
+        </Typography>
+      </CardContent>
+      <div style={{ textAlign: "right" }}>
+        <Typography sx={{ mt: 1.5 }} color="text.secondary">
+          Homes Provided
+        </Typography>
+        <Typography variant="h4" component="div" style={{ fontSize: "2rem" }}>
+          25
+        </Typography>
+        <Button
+          variant="contained"
+          disableElevation
+          style={{
+            color: "black",
+            borderColor: "black",
+            borderWidth: "1px",
+            borderStyle: "solid",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            fontSize: "12px",
+          }}
+        >
+          Build More Homes
+        </Button>
+      </div>
+    </Card>
+  );
 
   const purchaseDialog = (
     <Dialog open={open} onClose={handleClose}>
@@ -392,7 +447,7 @@ function Dashboard() {
           maxWidth: `calc(100% - 305px)`,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
         }}
       >
         <Box>
@@ -400,21 +455,36 @@ function Dashboard() {
             variant="h1"
             style={{ fontSize: "48px", marginTop: "30px", color: "#6D7580" }}
           >
-            Active Causes
+            Allocation
           </Typography>
           <Typography
             variant="h2"
-            style={{ fontSize: "24px", color: "#858C94" }}
+            style={{ fontSize: "24px", marginBottom: "50px", color: "#858C94" }}
           >
-            Your Commitment to Action
+            How your budget is allocated
           </Typography>
         </Box>
-        <Box style={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
-          {ecologiDashboardBox}
-          {purchaseDialog}
-          {donationDashboardBox}
-          <PieChartComponent />
-        </Box>
+        <div style={{ display: "flex", alignItems: "flex-start" }}>
+          {" "}
+          {/* Aligned at the top */}
+          {userId && <PieChartComponent userId={userId} />}
+          <Box
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              overflowX: "scroll",
+              alignItems: "center",
+              margin: "30px",
+              justifyContent: "flex-start",
+              width: "100%", // Ensure the box takes the full width
+            }}
+          >
+            {ecologiDashboardBox}
+            {donationDashboardBox}
+            {crisisBox}
+            {purchaseDialog}
+          </Box>
+        </div>
       </Container>
     </div>
   );
