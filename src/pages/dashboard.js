@@ -8,6 +8,13 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+  Paper,
 } from "@mui/material";
 import Tree from "../images/Tree.png";
 import JustGiving from "../images/JustGiving.jpg";
@@ -17,8 +24,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase"; // Import your Firestore instance
 import { useAuth } from "../components/authContext";
 import PieChartComponent from "../components/pie";
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -40,7 +46,7 @@ function Dashboard() {
       }
     });
   }, []);
-  
+
   const handlePurchaseClick = () => {
     setOpen(true);
   };
@@ -243,7 +249,7 @@ function Dashboard() {
         border: 1,
         borderRadius: 3,
         width: "85%",
-        borderColor: 'darkgray',
+        borderColor: "darkgray",
         height: 130,
         margin: 0,
         padding: "20px",
@@ -286,7 +292,8 @@ function Dashboard() {
             borderRadius: "8px",
             fontSize: "12px",
           }}
-        onClick={handlePurchaseClick}>
+          onClick={handlePurchaseClick}
+        >
           Plant More Trees
         </Button>
       </div>
@@ -301,7 +308,7 @@ function Dashboard() {
         flexDirection: "row",
         alignItems: "center",
         border: 1,
-        borderColor: 'darkgray',
+        borderColor: "darkgray",
         borderRadius: 3,
         width: "85%",
         height: 130,
@@ -361,7 +368,7 @@ function Dashboard() {
         flexDirection: "row",
         alignItems: "center",
         border: 1,
-        borderColor: 'darkgray',
+        borderColor: "darkgray",
         borderRadius: 3,
         width: "85%",
         height: 130,
@@ -427,6 +434,33 @@ function Dashboard() {
           value={treeCount}
           onChange={handleTreeCountChange}
         />
+        <Typography style={{ marginTop: "20px" }}>
+          Minimum of 20 trees.
+        </Typography>
+        <TableContainer component={Paper} style={{ marginTop: "10px" }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Trees</TableCell>
+                <TableCell align="right">Price</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>20 trees</TableCell>
+                <TableCell align="right">£4.80</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>200 trees</TableCell>
+                <TableCell align="right">£48</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>20,000 trees</TableCell>
+                <TableCell align="right">£4,800</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
