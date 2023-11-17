@@ -205,39 +205,39 @@ function Dashboard() {
     // eslint-disable-next-line
   }, [currentUser, navigate, fetchTreesPlanted]);
 
-  useEffect(() => {
-    const donationId = "D189693899"; // Replace with your actual donation ID
-    const appID = "169c43da";
-    const justGivingApiUrl = `https://api.staging.justgiving.com/${appID}/v1/donation/${donationId}`;
+  // useEffect(() => {
+    // const donationId = "D189693899"; // Replace with your actual donation ID
+    // const appID = "169c43da";
+    // const justGivingApiUrl = `https://api.staging.justgiving.com/${appID}/v1/donation/${donationId}`;
 
-    const fetchDonationDetails = async () => {
-      try {
-        const response = await fetch(justGivingApiUrl, {
-          method: "GET",
-          headers: {
-            "Content-type": "application/json",
-            Accept: "application/json",
-            Authorization: `Basic ${btoa("joshsparkes:1Time4UrMind!")}`, // Replace with your JustGiving username and password
-          },
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        // const data = await response.json();
-        // setDonationDetails({
-        //   amount: data.amount,
-        //   currencyCode: data.currencyCode,
-        //   donationDate: data.donationDate,
-        //   donorDisplayName: data.donorDisplayName,
-        //   message: data.message,
-        // });
-      } catch (error) {
-        console.error("Error fetching donation details:", error);
-      }
-    };
+  //   const fetchDonationDetails = async () => {
+  //     try {
+  //       const response = await fetch(justGivingApiUrl, {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-type": "application/json",
+  //           Accept: "application/json",
+  //           Authorization: `Basic ${btoa("joshsparkes:1Time4UrMind!")}`, // Replace with your JustGiving username and password
+  //         },
+  //       });
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
+  //       // const data = await response.json();
+  //       // setDonationDetails({
+  //       //   amount: data.amount,
+  //       //   currencyCode: data.currencyCode,
+  //       //   donationDate: data.donationDate,
+  //       //   donorDisplayName: data.donorDisplayName,
+  //       //   message: data.message,
+  //       // });
+  //     } catch (error) {
+  //       console.error("Error fetching donation details:", error);
+  //     }
+  //   };
 
-    fetchDonationDetails();
-  }, []);
+  //   fetchDonationDetails();
+  // }, []);
 
   const ecologiDashboardBox = (
     <Card
