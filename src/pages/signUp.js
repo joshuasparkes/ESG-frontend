@@ -37,7 +37,7 @@ export default function SignUp() {
         createdAt: serverTimestamp(),
       });
 
-      navigate("/dashboard");
+      navigate("/onboarding");
     } catch (error) {
       console.error("Error signing in with Google: ", error);
       setErrorMessage("An error occurred while signing in with Google.");
@@ -69,7 +69,7 @@ export default function SignUp() {
         email: email,
         createdAt: serverTimestamp(),
       });
-      navigate("/dashboard");
+      navigate("/onboarding");
       setErrorMessage(""); // Clear any existing error message
     } catch (error) {
       console.error("Error signing up:", error.code);

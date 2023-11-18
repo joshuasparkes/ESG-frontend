@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React,  /* useEffect */ { useState } from "react";
 import { Card, CardContent, Typography, Button } from "@mui/material";
-import { getDoc, doc } from "firebase/firestore";
-import { db } from "../firebase";
-import { useAuth } from "../components/authContext";
+// import { getDoc, doc } from "firebase/firestore";
+// import { db } from "../firebase";
+// import { useAuth } from "../components/authContext";
 import Tree from "../images/Tree.png";
 import JustGiving from "../images/JustGiving.jpg";
 import Crisis from "../images/crisis.jpeg";
 import PurchaseDialog from "../components/purchaseDialog";
 
 function Charities() {
-  const { currentUser, updateUserProfile, userProfile } = useAuth();
-  const [treesPlanted, setTreesPlanted] = useState(0);
+  // const { currentUser, updateUserProfile, userProfile } = useAuth();
+  // const [treesPlanted, setTreesPlanted] = useState(0);
   const [open, setOpen] = useState(false);
   const [treeCount, setTreeCount] = useState(0);
 
