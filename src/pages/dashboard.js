@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Container, Box } from "@mui/material";
+import { Avatar, Box, Container, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
@@ -8,14 +8,12 @@ import { useAuth } from "../components/authContext";
 import Navbar from "../components/navBar";
 import PieChartComponent from "../components/pie";
 import Charities from "../components/charities";
-import PurchaseDialog from "../components/purchaseDialog";
 
 function Dashboard() {
   const navigate = useNavigate();
   const { currentUser, updateUserProfile } = useAuth();
-  const [open, setOpen] = useState(false);
-  const [treeCount, setTreeCount] = useState(0);
   const [userId, setUserId] = useState(null);
+  const [businessName, setBusinessName] = useState(""); // New state for business name
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
@@ -29,18 +27,6 @@ function Dashboard() {
     return () => unsubscribe(); // Cleanup listener on unmount
   }, [navigate]);
 
-  const handlePurchaseClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleTreeCountChange = (event) => {
-    setTreeCount(event.target.value);
-  };
-
   useEffect(() => {
     let isComponentMounted = true;
 
@@ -49,7 +35,9 @@ function Dashboard() {
         const userDocRef = doc(db, "users", currentUser.uid);
         const userDocSnapshot = await getDoc(userDocRef);
         if (userDocSnapshot.exists() && isComponentMounted) {
-          updateUserProfile(userDocSnapshot.data());
+          const userData = userDocSnapshot.data();
+          updateUserProfile(userData);
+          setBusinessName(userData.businessName); // Set the business name
         }
       }
     };
@@ -62,6 +50,10 @@ function Dashboard() {
       isComponentMounted = false;
     };
   }, [currentUser, updateUserProfile]);
+
+  const getInitials = (name) => {
+    return name ? name[0] : "";
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
@@ -76,6 +68,21 @@ function Dashboard() {
           justifyContent: "flex-start",
         }}
       >
+        <Box
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            margin: "30px",
+            borderRadius: "20px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <Typography variant="h5">{businessName}</Typography>
+          <Avatar>{getInitials(businessName)}</Avatar>
+        </Box>
         <Box>
           <Typography
             variant="h1"
@@ -103,17 +110,10 @@ function Dashboard() {
               width: "100%",
             }}
           >
-            <Charities handlePurchaseClick={handlePurchaseClick} />
+            <Charities />
           </Box>
         </div>
       </Container>
-      <PurchaseDialog
-        open={open}
-        handleClose={handleClose}
-        treeCount={treeCount}
-        handleTreeCountChange={handleTreeCountChange}
-        handlePurchase={() => {}}
-      />
     </div>
   );
 }

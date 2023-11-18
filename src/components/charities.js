@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, Typography, Button } from "@mui/material";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
@@ -6,59 +6,74 @@ import { useAuth } from "../components/authContext";
 import Tree from "../images/Tree.png";
 import JustGiving from "../images/JustGiving.jpg";
 import Crisis from "../images/crisis.jpeg";
+import PurchaseDialog from "../components/purchaseDialog";
 
-function Charities({ handlePurchaseClick }) {
+function Charities() {
   const { currentUser, updateUserProfile, userProfile } = useAuth();
   const [treesPlanted, setTreesPlanted] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [treeCount, setTreeCount] = useState(0);
 
-  const fetchTreesPlanted = useCallback(async () => {
-    if (!currentUser) {
-      console.error("No user is signed in.");
-      return;
-    }
+  const handlePurchaseClick = () => {
+    setOpen(true);
+  };
 
-    const userDocRef = doc(db, "users", currentUser.uid);
-    const userDocSnapshot = await getDoc(userDocRef);
+  const handleTreeCountChange = (event) => {
+    setTreeCount(event.target.value);
+  };
 
-    if (userDocSnapshot.exists()) {
-      const userData = userDocSnapshot.data();
-      updateUserProfile(userData);
-      const ecologiKey = userProfile ? userProfile.ecologiKey : null;
-      const ecologiUsername = userProfile ? userProfile.ecologiUsername : null;
+  // useEffect(() => {
+  //   const fetchTreesPlanted = async () => {
+  //     if (!currentUser) {
+  //       console.error("No user is signed in.");
+  //       return;
+  //     }
 
-      if (!ecologiUsername || !ecologiKey) {
-        console.error("Ecologi API key or username is not set for the user.");
-        return;
-      }
+  //     const userDocRef = doc(db, "users", currentUser.uid);
+  //     const userDocSnapshot = await getDoc(userDocRef);
 
-      const apiUrl = `https://public.ecologi.com/users/${ecologiUsername}/trees`;
+  //     if (userDocSnapshot.exists()) {
+  //       const userData = userDocSnapshot.data();
+  //       // Only update the profile if it has changed
+  //       if (JSON.stringify(userProfile) !== JSON.stringify(userData)) {
+  //         updateUserProfile(userData);
+  //       }
 
-      try {
-        const response = await fetch(apiUrl, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${ecologiKey}`,
-            Accept: "application/json",
-          },
-        });
+  //       const ecologiKey = userData.ecologiKey;
+  //       const ecologiUsername = userData.ecologiUsername;
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+  //       if (!ecologiKey || !ecologiUsername) {
+  //         console.error("Ecologi API key or username is not set for the user.");
+  //         return;
+  //       }
 
-        const data = await response.json();
-        setTreesPlanted(data.total);
-      } catch (error) {
-        console.error("Error fetching the number of trees planted:", error);
-      }
-    } else {
-      console.error("User document does not exist.");
-    }
-  }, [currentUser, userProfile, updateUserProfile]);
+  //       const apiUrl = `https://public.ecologi.com/users/${ecologiUsername}/trees`;
 
-  useEffect(() => {
-    fetchTreesPlanted();
-  }, [fetchTreesPlanted]);
+  //       try {
+  //         const response = await fetch(apiUrl, {
+  //           method: "GET",
+  //           headers: {
+  //             Authorization: `Bearer ${ecologiKey}`,
+  //             Accept: "application/json",
+  //           },
+  //         });
+
+  //         if (!response.ok) {
+  //           throw new Error(`HTTP error! status: ${response.status}`);
+  //         }
+
+  //         const data = await response.json();
+  //         setTreesPlanted(data.total);
+  //       } catch (error) {
+  //         console.error("Error fetching the number of trees planted:", error);
+  //       }
+  //     } else {
+  //       console.error("User document does not exist.");
+  //     }
+  //   };
+
+  //   fetchTreesPlanted();
+  // }, [currentUser, updateUserProfile, userProfile]); // Include updateUserProfile and userProfile in the dependency array
 
   function DashboardBox({
     image,
@@ -135,7 +150,7 @@ function Charities({ handlePurchaseClick }) {
         subtitle="Renewable Energy"
         amount={`Monthly Allocation: £2,000`}
         buttonText="Donate"
-        benefitText={`Trees Planted: ${treesPlanted}`}
+        benefitText={`Trees Planted: 250,000`}
         onClick={handlePurchaseClick}
       />
       <DashboardBox
@@ -144,7 +159,7 @@ function Charities({ handlePurchaseClick }) {
         subtitle="Diversity & Inclusion"
         amount="Monthly Allocation: £3,500"
         buttonText="Donate"
-        benefitText="Amount Given"
+        benefitText="Amount Given: £20,000"
       />
       <DashboardBox
         image={Crisis}
@@ -152,7 +167,14 @@ function Charities({ handlePurchaseClick }) {
         subtitle="Homelessness"
         amount="Monthly Allocation: £2,000"
         buttonText="Donate"
-        benefitText="Homes Providerd"
+        benefitText="Homes Provided: 244"
+      />
+      <PurchaseDialog
+        open={open}
+        handleClose={() => setOpen(false)}
+        treeCount={treeCount}
+        handleTreeCountChange={handleTreeCountChange}
+        handlePurchase={() => {}}
       />
     </>
   );

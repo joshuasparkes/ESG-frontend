@@ -14,6 +14,8 @@ import Settings from "./pages/settings";
 import Integrations from "./pages/integrations";
 import Report from "./pages/report";
 import Learn from "./pages/learn";
+import Onboarding from "./pages/onboarding";
+import CreateReports from "./pages/createReports";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
         <Route path="/landingPage" element={<LandingPage />} />
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/signIn" element={<SignInSide />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/createReports" element={<CreateReports />} />
       </Routes>
     </Router>
   );

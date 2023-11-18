@@ -84,19 +84,6 @@ const Learn = () => {
             </Box>
           </Paper>
         ))}
-
-        {/* Uncomment and update this section when actual content is available */}
-        {/* <div>
-          {items.map((item, index) => (
-            <div key={index}>
-              <h3>{item.title}</h3>
-              <p>{item.summary}</p>
-              <a href={item.link} target="_blank" rel="noopener noreferrer">
-                Read more
-              </a>
-            </div>
-          ))}
-        </div> */}
       </Container>
     </div>
   );

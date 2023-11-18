@@ -13,7 +13,7 @@ import { auth, signOut } from "../firebase";
 import LinkIcon from "@mui/icons-material/Link";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import SchoolIcon from "@mui/icons-material/School";
-import ArticleIcon from '@mui/icons-material/Article';
+import ArticleIcon from "@mui/icons-material/Article";
 
 function Navbar() {
   const handleSignOut = async () => {
@@ -48,8 +48,8 @@ function Navbar() {
       case "settings":
         navigate("/settings");
         break;
-      case "Report":
-        navigate("/report");
+      case "CreateReports":
+        navigate("/createReports");
         break;
       default:
         break;
@@ -111,13 +111,13 @@ function Navbar() {
 
             <ListItem
               button
-              key="Report"
-              onClick={() => handleNavigation("Report")}
+              key="Create Reports"
+              onClick={() => handleNavigation("CreateReports")}
             >
               <ListItemIcon>
                 <ArticleIcon />
               </ListItemIcon>
-              <ListItemText primary="Create Report" />
+              <ListItemText primary="Create Reports" />
             </ListItem>
 
             <ListItem
