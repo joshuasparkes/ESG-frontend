@@ -29,7 +29,7 @@ function LandingPage() {
     e.preventDefault();
 
     const emailData = {
-      subject: "Tracsr Demo Request",
+      subject: "Tracsr Email Capture",
       body: `Email: ${email}`,
     };
 

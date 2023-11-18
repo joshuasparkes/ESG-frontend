@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { Typography } from "@mui/material";
+import { db } from '../firebase'
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -9,23 +11,25 @@ const PieChartComponent = ({ userId }) => {
   const [monthlyBudget, setMonthlyBudget] = useState(0);
   const [editMode, setEditMode] = useState(false);
   const [newBudget, setNewBudget] = useState(0);
-  console.log(userId);
 
   useEffect(() => {
-    // Fetch the user's monthly budget
-    const fetchBudget = async () => {
-      const db = getFirestore();
-      const docRef = doc(db, "users", userId);
-      const docSnap = await getDoc(docRef);
+    let isComponentMounted = true;
 
-      if (docSnap.exists()) {
-        setMonthlyBudget(docSnap.data().monthlyBudget);
-      } else {
-        // Handle the case where the document does not exist
+    const fetchBudget = async () => {
+      if (userId) {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists() && isComponentMounted) {
+          setMonthlyBudget(docSnap.data().monthlyBudget);
+        }
       }
     };
 
     fetchBudget();
+
+    return () => {
+      isComponentMounted = false;
+    };
   }, [userId]);
 
   const handleEditClick = () => {
@@ -110,7 +114,7 @@ const PieChartComponent = ({ userId }) => {
   return (
     <div
       style={{
-        width: "400px",
+        width: "300px",
         height: "400px",
         display: "flex",
         flexDirection: "column",
@@ -150,17 +154,29 @@ const PieChartComponent = ({ userId }) => {
           </button>
         </div>
       ) : (
-        <div style={{ marginTop: "20px" }}>
-          <text style={{ marginRight: "8px", fontSize: "1rem", color: "#333" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginTop: "20px",
+          }}
+        >
+          <Typography
+            style={{
+              padding: "8px",
+              borderRadius: "4px",
+              marginRight: "8px",
+            }}
+          >
             Monthly Budget: £{monthlyBudget}
-          </text>
+          </Typography>
           <button
             onClick={handleEditClick}
             style={{
-              padding: "4px 16px",
+              padding: "8px 16px",
               fontSize: "1rem",
               color: "white",
-              backgroundColor: "grey",
+              backgroundColor: "#007bff",
               border: "none",
               borderRadius: "4px",
               cursor: "pointer",

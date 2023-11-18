@@ -23,19 +23,24 @@ function Integrations() {
   const [ecologiUsername, setEcologiUsername] = useState("");
 
   useEffect(() => {
-    // Fetch the existing API key and username when the component loads
+    let isComponentMounted = true;
+
     const fetchApiKeyAndUsername = async () => {
       if (currentUser) {
         const userDocRef = doc(db, "users", currentUser.uid);
         const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
+        if (userDoc.exists() && isComponentMounted) {
           setApiKey(userDoc.data().ecologiKey || "");
-          setEcologiUsername(userDoc.data().ecologiUsername || ""); // Set the Ecologi username
+          setEcologiUsername(userDoc.data().ecologiUsername || "");
         }
       }
     };
 
     fetchApiKeyAndUsername();
+
+    return () => {
+      isComponentMounted = false;
+    };
   }, [currentUser]);
 
   const saveEcologiKey = async (apiKey, username) => {
