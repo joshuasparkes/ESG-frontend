@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Logo from '../images/LogoIcon.png'
+import Logo from "../images/LogoIcon.png";
+import Screenshot from '../images/screenshot1.png'
 
 function LandingPage() {
   const [selected, setSelected] = useState(0);
+  const [email, setEmail] = useState("");
 
   const items = [
     {
@@ -23,50 +25,68 @@ function LandingPage() {
     },
   ];
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const emailData = {
+      subject: "Tracsr Demo Request",
+      body: `Email: ${email}`,
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (response.ok) {
+        alert("Demo request sent successfully!");
+      } else {
+        alert("Failed to send demo request.");
+      }
+    } catch (error) {
+      console.error("Error sending email:", error);
+      alert("Error sending demo request.");
+    }
+  };
+
   return (
     <div>
-    <div className="top-bar">
-      <img src={Logo} alt="Logo" className="logo" height={100}/>
-      <div className="top-bar-buttons">
-        <Link to="/signIn" className="btn btn-secondary">Sign In</Link>
-        <Link to="/signUp" className="btn btn-secondary">Sign Up</Link>
+      <div className="top-bar">
+        <img src={Logo} alt="Logo" className="logo" height={100} />
+        <div className="top-bar-buttons">
+          <Link to="/signIn" className="top-bar-button">
+            Sign In
+          </Link>
+          <Link to="/signUp" className="top-bar-button">
+            Sign Up
+          </Link>
+        </div>
       </div>
-    </div>
-    <div className="container1">
+      <div className="container1">
         <h1 className="title">Tracsr</h1>
         <h2 className="subtitle">
           Next gen reporting on your business' ESG budget allocation.
         </h2>
-        <div className="btn-container">
-          <Link
-            style={{
-              padding: "20px",
-              borderRadius: "8px",
-              backgroundColor: "#000",
-              border: "black 2px solid",
-              fontWeight: "400px",
-              width: "200px",
-            }}
-            className="btn btn-secondary"
-            to="/dashboard"
-          >
-            Access Dashboard
-          </Link>
-          <Link
-            style={{
-              padding: "20px",
-              borderRadius: "8px",
-              backgroundColor: "#000",
-              border: "black 2px solid",
-              fontWeight: "400px",
-              width: "200px",
-            }}
-            className="btn btn-secondary"
-            to="/signUp"
-          >
-            Sign Up
-          </Link>
-        </div>
+        <form onSubmit={handleSubmit} className="demo-form">
+          <input
+            className="email-input"
+            type="email"
+            placeholder="I'm Interested!"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <button type="submit" className="email-submit">
+            Submit
+          </button>
+        </form>
+      </div>
+      <div className="container1b">
+        <img className="screenshot" src={Screenshot} alt='screenshot'/>
       </div>
       <div className="container2">
         <div className="problem-section">

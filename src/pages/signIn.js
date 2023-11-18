@@ -91,14 +91,14 @@ export default function SignInSide() {
           md={7}
           sx={{
             backgroundImage:
-              "url(https://images.unsplash.com/photo-1573497491208-6b1acb260507?auto=format&fit=crop&q=80&w=2940&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)",
-            backgroundRepeat: "no-repeat",
+              "url(https://images.unsplash.com/photo-1444664361762-afba083a4d77?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            backgroundRepeat: "repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"
                 ? t.palette.grey[50]
                 : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundSize: "contain", // Adjust this value as needed
+            backgroundPosition: "right",
           }}
         />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
