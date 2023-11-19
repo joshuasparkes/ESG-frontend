@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { Typography } from "@mui/material";
-import { db } from '../firebase'
+import { db } from "../firebase";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const PieChartComponent = ({ userId }) => {
   const [monthlyBudget, setMonthlyBudget] = useState(0);
-  const [editMode, setEditMode] = useState(false);
-  const [newBudget, setNewBudget] = useState(0);
 
   useEffect(() => {
     let isComponentMounted = true;
@@ -32,22 +30,6 @@ const PieChartComponent = ({ userId }) => {
     };
   }, [userId]);
 
-  const handleEditClick = () => {
-    setEditMode(true);
-    setNewBudget(monthlyBudget);
-  };
-
-  const handleSubmit = async () => {
-    const db = getFirestore();
-    const userRef = doc(db, "users", userId);
-
-    await updateDoc(userRef, {
-      monthlyBudget: newBudget,
-    });
-
-    setMonthlyBudget(newBudget);
-    setEditMode(false);
-  };
   const data = {
     labels: [
       "Renewable Energies",
@@ -124,68 +106,23 @@ const PieChartComponent = ({ userId }) => {
       }}
     >
       <Pie data={data} options={options} plugins={[pieChartPlugin]} />
-
-      {editMode ? (
-        <div style={{ marginTop: "20px" }}>
-          <input
-            type="number"
-            value={newBudget}
-            onChange={(e) => setNewBudget(e.target.value)}
-            style={{
-              padding: "8px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              marginRight: "8px",
-            }}
-          />
-          <button
-            onClick={handleSubmit}
-            style={{
-              padding: "8px 16px",
-              fontSize: "1rem",
-              color: "white",
-              backgroundColor: "#007bff",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Submit
-          </button>
-        </div>
-      ) : (
-        <div
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginTop: "20px",
+        }}
+      >
+        <Typography
           style={{
-            display: "flex",
-            alignItems: "center",
-            marginTop: "20px",
+            padding: "8px",
+            borderRadius: "4px",
+            marginRight: "8px",
           }}
         >
-          <Typography
-            style={{
-              padding: "8px",
-              borderRadius: "4px",
-              marginRight: "8px",
-            }}
-          >
-            Monthly Budget: £{monthlyBudget}
-          </Typography>
-          <button
-            onClick={handleEditClick}
-            style={{
-              padding: "8px 16px",
-              fontSize: "1rem",
-              color: "white",
-              backgroundColor: "#007bff",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Edit
-          </button>
-        </div>
-      )}
+          Monthly Budget: £{monthlyBudget}
+        </Typography>
+      </div>
     </div>
   );
 };

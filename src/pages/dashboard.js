@@ -13,7 +13,9 @@ function Dashboard() {
   const navigate = useNavigate();
   const { currentUser, updateUserProfile } = useAuth();
   const [userId, setUserId] = useState(null);
-  const [businessName, setBusinessName] = useState(""); // New state for business name
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [businessName, setBusinessName] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
@@ -27,17 +29,29 @@ function Dashboard() {
     return () => unsubscribe(); // Cleanup listener on unmount
   }, [navigate]);
 
+  const handleAvatarClick = () => {
+    navigate("/settings");
+  };
+
   useEffect(() => {
+    console.log("useEffect triggered", currentUser);
+
     let isComponentMounted = true;
 
     const fetchUserProfile = async () => {
+      console.log("fetchUserProfile called", currentUser);
+
       if (currentUser && currentUser.uid) {
         const userDocRef = doc(db, "users", currentUser.uid);
         const userDocSnapshot = await getDoc(userDocRef);
         if (userDocSnapshot.exists() && isComponentMounted) {
           const userData = userDocSnapshot.data();
+          console.log("Updating user profile and business name", userData);
+
           updateUserProfile(userData);
-          setBusinessName(userData.businessName); // Set the business name
+          setBusinessName(userData.businessName);
+          setFirstName(userData.firstName);
+          setLastName(userData.lastName);
         }
       }
     };
@@ -49,7 +63,8 @@ function Dashboard() {
     return () => {
       isComponentMounted = false;
     };
-  }, [currentUser, updateUserProfile]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
 
   const getInitials = (name) => {
     return name ? name[0] : "";
@@ -77,11 +92,34 @@ function Dashboard() {
             borderRadius: "20px",
             display: "flex",
             alignItems: "center",
+            flexDirection: "row",
             gap: "10px",
           }}
         >
-          <Typography variant="h5">{businessName}</Typography>
-          <Avatar>{getInitials(businessName)}</Avatar>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div
+              style={{
+                alignContent: "flex-end",
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <Typography variant="h5" style={{ color: "#6D7580" }}>
+                {firstName} {lastName}
+              </Typography>
+            </div>
+
+            <Typography
+              style={{ color: "#6D7580" }}
+              align="right"
+              variant="body"
+            >
+              {businessName}
+            </Typography>
+          </div>
+          <Avatar style={{ cursor: "pointer" }} onClick={handleAvatarClick}>
+            {getInitials(businessName)}
+          </Avatar>
         </Box>
         <Box>
           <Typography
@@ -110,7 +148,7 @@ function Dashboard() {
               width: "100%",
             }}
           >
-            <Charities />
+            <Charities userId={userId} />
           </Box>
         </div>
       </Container>
