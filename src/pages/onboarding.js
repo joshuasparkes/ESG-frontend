@@ -22,8 +22,8 @@ const Onboarding = () => {
   const [organizationName, setOrganizationName] = useState("");
   const [monthlyBudget, setMonthlyBudget] = useState("");
   const [firstName, setFirstName] = useState("");
-  const totalScreens = 3; // Set the total number of screens in the onboarding process
-  const [openSnackbar, setOpenSnackbar] = useState(false); // State to control snackbar visibility
+  const totalScreens = 5;
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const progress = (activeScreen / totalScreens) * 100;
 
@@ -127,6 +127,47 @@ const Onboarding = () => {
 
         {activeScreen === 2 && (
           <Grid item>
+            <Typography variant="h5" style={{ textAlign: "center" }}>
+              What is ESG?
+            </Typography>
+            <Typography
+              variant="body1"
+              style={{ marginTop: "16px", textAlign: "center" }}
+            >
+              ESG stands for Environmental, Social, and Governance. It's a
+              framework used by organizations to assess the impact of their
+              operations on the environment, society, and how they are governed.
+              ESG criteria help in determining how a company safeguards the
+              environment, manages relationships with employees, suppliers,
+              customers, and the communities where it operates, as well as its
+              leadership, executive pay, audits, internal controls, and
+              shareholder rights.
+            </Typography>
+          </Grid>
+        )}
+
+        {activeScreen === 3 && (
+          <Grid item>
+            <Typography variant="h5" style={{ textAlign: "center" }}>
+              How Tracsr Helps
+            </Typography>
+            <Typography
+              variant="body1"
+              style={{ marginTop: "16px", textAlign: "center" }}
+            >
+              Tracsr simplifies ESG budget management for your organization. It
+              guides you through allocating funds to various ESG initiatives,
+              tracks the impact of your contributions, and provides insightful
+              analytics and reports. With Tracsr, managing your ESG
+              responsibilities becomes more straightforward, efficient, and
+              impactful, allowing you to focus on making a real difference in
+              areas that matter most to your business and society.
+            </Typography>
+          </Grid>
+        )}
+
+        {activeScreen === 4 && (
+          <Grid item>
             <Typography align="center" variant="h5">
               Enter your organization name
             </Typography>
@@ -141,7 +182,7 @@ const Onboarding = () => {
           </Grid>
         )}
 
-        {activeScreen === 3 && (
+        {activeScreen === 5 && (
           <Grid item>
             <Typography align="center" variant="h5">
               Enter your monthly ESG budget
@@ -202,14 +243,14 @@ const Onboarding = () => {
                 variant="contained"
                 color="primary"
                 onClick={
-                  activeScreen < 3
+                  activeScreen < 5
                     ? handleNext
-                    : activeScreen === 3
+                    : activeScreen === 5
                     ? handleFinish
                     : null
                 }
               >
-                {activeScreen === 3 ? "Finish" : "Next"}
+                {activeScreen === 5 ? "Finish" : "Next"}
               </Button>
             </div>
           </Grid>
