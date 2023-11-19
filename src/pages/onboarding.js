@@ -10,11 +10,18 @@ import {
   Tooltip,
   Snackbar,
   Alert,
+  Checkbox,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { db, auth } from "../firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -22,21 +29,77 @@ const Onboarding = () => {
   const [organizationName, setOrganizationName] = useState("");
   const [monthlyBudget, setMonthlyBudget] = useState("");
   const [firstName, setFirstName] = useState("");
-  const totalScreens = 5;
+  const totalScreens = 6;
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
   const progress = (activeScreen / totalScreens) * 100;
+
+  const goalCategories = [
+    {
+      category: "Environmental Goals",
+      goals: [
+        "Carbon Footprint Reduction",
+        "Sustainable Resource Use",
+        "Renewable Energy Transition",
+        "Biodiversity and Conservation",
+      ],
+    },
+    {
+      category: "Social Goals",
+      goals: [
+        "Diversity and Inclusion",
+        "Community Engagement",
+        "Employee Wellbeing and Safety",
+        "Ethical Supply Chain Management",
+      ],
+    },
+    {
+      category: "Governance Goals",
+      goals: [
+        "Ethical Business Practices",
+        "Board Diversity and Structure",
+        "Stakeholder Engagement",
+        "Compliance and Reporting",
+      ],
+    },
+  ];
+
+  const [selectedGoals, setSelectedGoals] = useState([]);
+
+  const handleGoalSelection = (event, category, goalName) => {
+    const updatedGoals = [...selectedGoals];
+
+    // Check if the goal is already selected
+    const existingGoalIndex = updatedGoals.findIndex(
+      (goal) => goal.category === category && goal.goalName === goalName
+    );
+
+    if (existingGoalIndex !== -1) {
+      // Goal is already selected, remove it
+      updatedGoals.splice(existingGoalIndex, 1);
+    } else {
+      // Goal is not selected, add it
+      updatedGoals.push({ category, goalName });
+    }
+
+    setSelectedGoals(updatedGoals);
+  };
 
   const saveDataToFirestore = async () => {
     const user = auth.currentUser;
     if (user) {
       try {
+        // Create an array of selected goal names
+        const selectedGoalNames = selectedGoals.map(
+          (goal) => `${goal.category}: ${goal.goalName}`
+        );
+
         const userRef = doc(db, "users", user.uid);
         await setDoc(
           userRef,
           {
             businessName: organizationName,
             monthlyBudget: monthlyBudget,
+            esgGoals: selectedGoalNames, // Save selected goals here
           },
           { merge: true }
         );
@@ -185,6 +248,42 @@ const Onboarding = () => {
         {activeScreen === 5 && (
           <Grid item>
             <Typography align="center" variant="h5">
+              Which of the following goals do you want to pursue?
+            </Typography>
+            {goalCategories.map((category) => (
+              <Accordion elevation={0} key={category.category}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="h6">{category.category}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    {category.goals.map((goal) => (
+                      <label key={goal}>
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                          checkedIcon={<CheckBoxIcon fontSize="small" />}
+                          checked={selectedGoals.some(
+                            (selectedGoal) =>
+                              selectedGoal.category === category.category &&
+                              selectedGoal.goalName === goal
+                          )}
+                          onChange={(event) =>
+                            handleGoalSelection(event, category.category, goal)
+                          }
+                        />
+                        {goal}
+                      </label>
+                    ))}
+                  </div>
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </Grid>
+        )}
+
+        {activeScreen === 6 && (
+          <Grid item>
+            <Typography align="center" variant="h5">
               Enter your monthly ESG budget
             </Typography>
             <TextField
@@ -243,14 +342,14 @@ const Onboarding = () => {
                 variant="contained"
                 color="primary"
                 onClick={
-                  activeScreen < 5
+                  activeScreen < 6
                     ? handleNext
-                    : activeScreen === 5
+                    : activeScreen === 6
                     ? handleFinish
                     : null
                 }
               >
-                {activeScreen === 5 ? "Finish" : "Next"}
+                {activeScreen === 6 ? "Finish" : "Next"}
               </Button>
             </div>
           </Grid>
