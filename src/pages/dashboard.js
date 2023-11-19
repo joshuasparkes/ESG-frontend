@@ -34,19 +34,15 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    console.log("useEffect triggered", currentUser);
-
+    
     let isComponentMounted = true;
 
     const fetchUserProfile = async () => {
-      console.log("fetchUserProfile called", currentUser);
-
       if (currentUser && currentUser.uid) {
         const userDocRef = doc(db, "users", currentUser.uid);
         const userDocSnapshot = await getDoc(userDocRef);
         if (userDocSnapshot.exists() && isComponentMounted) {
           const userData = userDocSnapshot.data();
-          console.log("Updating user profile and business name", userData);
 
           updateUserProfile(userData);
           setBusinessName(userData.businessName);
