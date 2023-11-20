@@ -4,7 +4,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Logo from "../images/LogoIcon.png";
+import Logo from "../images/tracsr-logomark-type.png";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import SchoolIcon from "@mui/icons-material/School";
 import ArticleIcon from "@mui/icons-material/Article";
+import HelpCenterIcon from '@mui/icons-material/HelpCenter'
 
 function Navbar() {
   const handleSignOut = async () => {
@@ -46,6 +47,9 @@ function Navbar() {
         break;
       case "settings":
         navigate("/settings");
+        break;
+        case "Docs":
+        window.open("/docs", "_blank");
         break;
       case "CreateReports":
         navigate("/createReports");
@@ -83,7 +87,7 @@ function Navbar() {
           <img
             src={Logo}
             alt="PMAI Logo"
-            style={{ width: "50px", marginBottom: "20px", marginTop: "30px" }}
+            style={{ width: "100px", marginBottom: "0px", marginTop: "10px" }}
           />
           <List style={{ width: "100%" }}>
             <ListItem
@@ -133,10 +137,20 @@ function Navbar() {
         </div>
 
         <List style={{ width: "100%" }}>
+        <ListItem
+            button
+            key="Docs"
+            onClick={() => handleNavigation("Docs")}
+          >
+            <ListItemIcon>
+              <HelpCenterIcon />
+            </ListItemIcon>
+            <ListItemText primary="Docs" />
+          </ListItem>
           <ListItem
             button
-            key="Report an Issue"
-            onClick={() => handleNavigation("Report an Issue")}
+            key="Docs"
+            onClick={() => handleNavigation("Docs")}
           >
             <ListItemIcon>
               <BugReportIcon />

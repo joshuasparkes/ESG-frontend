@@ -16,6 +16,7 @@ import Report from "./pages/report";
 import Learn from "./pages/learn";
 import Onboarding from "./pages/onboarding";
 import CreateReports from "./pages/createReports";
+import Docs from "./pages/docs";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/signIn" element={<SignInSide />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/createReports" element={<CreateReports />} />
+        <Route path="/docs" element={<Docs />} />
       </Routes>
     </Router>
   );

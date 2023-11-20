@@ -18,7 +18,7 @@
 }
 
 .logo {
-  height: 50px; /* Adjust as needed */
+  height: 60px; 
 }
 
 .top-bar-buttons .btn {
@@ -35,7 +35,7 @@
 }
 
 .container1 {
-  height: 100vh; /* Sets the minimum height of the container to fill the viewport */
+  height: 80vh; /* Sets the minimum height of the container to fill the viewport */
   width: 100vw;
   display: flex; /* Use Flexbox */
   flex-direction: column; /* Stack the children vertically */

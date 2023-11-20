@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Logo from "../images/LogoIcon.png";
-import Screenshot from '../images/screenshot1.png'
+import Logo from "../images/tracsr-logomark-type.png";
+import Screenshot from "../images/screenshot1.png";
 
 function LandingPage() {
   const [selected, setSelected] = useState(0);
@@ -56,7 +56,7 @@ function LandingPage() {
   return (
     <div>
       <div className="top-bar">
-        <img src={Logo} alt="Logo" className="logo" height={100} />
+        <img src={Logo} alt="Logo" className="logo"  />
         <div className="top-bar-buttons">
           <Link to="/signIn" className="top-bar-button">
             Sign In
@@ -86,7 +86,7 @@ function LandingPage() {
         </form>
       </div>
       <div className="container1b">
-        <img className="screenshot" src={Screenshot} alt='screenshot'/>
+        <img className="screenshot" src={Screenshot} alt="screenshot" />
       </div>
       <div className="container2">
         <div className="problem-section">
