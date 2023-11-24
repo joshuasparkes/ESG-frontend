@@ -101,7 +101,7 @@ const OnboardingCharity = () => {
 
     setOpenSnackbar(true);
     setTimeout(() => {
-      navigate("/dashboard");
+      navigate("/myCharity");
     }, 1250);
   };
 
