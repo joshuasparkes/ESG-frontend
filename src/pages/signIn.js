@@ -20,7 +20,7 @@ const defaultTheme = createTheme();
 export default function SignInSide() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [userType, setUserType] = React.useState(""); // Initialize userType state
+  const setUserType = React.useState(""); // Initialize userType state
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -63,7 +63,7 @@ export default function SignInSide() {
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password");
-  
+
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -71,7 +71,7 @@ export default function SignInSide() {
         password
       );
       const user = userCredential.user;
-  
+
       fetchUserType(user);
     } catch (error) {
       console.error("Error signing in:", error.code);
@@ -95,7 +95,6 @@ export default function SignInSide() {
       setErrorMessage(userFriendlyMessage); // Set the user-friendly error message
     }
   };
-  
 
   const handleForgotPassword = () => {
     window.location.href = `mailto:joshsparkes6@gmail.com?subject=Password Reset&body=Please help me reset my password.`;
