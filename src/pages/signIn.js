@@ -17,88 +17,87 @@ import GoogleIcon from "../components/googleIcon";
 
 const defaultTheme = createTheme();
 
-export default function SignInSide() {
-  const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = React.useState("");
-  const setUserType = React.useState(""); // Initialize userType state
-
-  const handleGoogleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const idToken = await user.getIdToken();
-      console.log(`Firebase ID token: ${idToken}`);
-
-      fetchUserType(user);
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-      setErrorMessage(
-        "An error occurred with Google Sign-In. Please try again."
-      );
-    }
-  };
-
-  const fetchUserType = async (user) => {
-    // Fetch userType similar to the other component
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
-    if (userSnap.exists()) {
-      const userType = userSnap.data().userType; // Set userType from Firestore data
-      setUserType(userType); // Update userType state
-
-      // Redirect based on userType
-      if (userType === "charity") {
-        navigate("/myCharity");
-      } else if (userType === "donor") {
-        navigate("/dashboard");
-      } else {
-        // Handle other user types or scenarios here
+  export default function SignInSide() {
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = React.useState("");
+  
+    const handleGoogleSignIn = async () => {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        const idToken = await user.getIdToken();
+        console.log(`Firebase ID token: ${idToken}`);
+  
+        fetchUserType(user);
+      } catch (error) {
+        console.error("Error signing in with Google:", error);
+        setErrorMessage(
+          "An error occurred with Google Sign-In. Please try again."
+        );
       }
-    }
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get("email");
-    const password = data.get("password");
-
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-
-      fetchUserType(user);
-    } catch (error) {
-      console.error("Error signing in:", error.code);
-      let userFriendlyMessage = "";
-      switch (error.code) {
-        case "auth/wrong-password":
-          userFriendlyMessage = "Invalid password. Please try again.";
-          break;
-        case "auth/invalid-login-credentials":
-          userFriendlyMessage = "No user found with this email address.";
-          break;
-        case "auth/user-not-found":
-          userFriendlyMessage = "No user found with this email address.";
-          break;
-        case "auth/user-disabled":
-          userFriendlyMessage = "This account has been disabled.";
-          break;
-        default:
-          userFriendlyMessage = "An error occurred. Please try again.";
+    };
+  
+    const fetchUserType = async (user) => {
+      // Fetch userType similar to the other component
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const userType = userSnap.data().userType; // Set userType from Firestore data
+  
+        // Redirect based on userType
+        if (userType === "charity") {
+          navigate("/myCharity");
+        } else if (userType === "donor") {
+          navigate("/dashboard");
+        } else {
+          // Handle other user types or scenarios here
+        }
       }
-      setErrorMessage(userFriendlyMessage); // Set the user-friendly error message
-    }
-  };
-
-  const handleForgotPassword = () => {
-    window.location.href = `mailto:joshsparkes6@gmail.com?subject=Password Reset&body=Please help me reset my password.`;
-  };
+    };
+  
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const email = data.get("email");
+      const password = data.get("password");
+  
+      try {
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const user = userCredential.user;
+  
+        fetchUserType(user);
+      } catch (error) {
+        console.error("Error signing in:", error.code);
+        let userFriendlyMessage = "";
+        switch (error.code) {
+          case "auth/wrong-password":
+            userFriendlyMessage = "Invalid password. Please try again.";
+            break;
+          case "auth/invalid-login-credentials":
+            userFriendlyMessage = "No user found with this email address.";
+            break;
+          case "auth/user-not-found":
+            userFriendlyMessage = "No user found with this email address.";
+            break;
+          case "auth/user-disabled":
+            userFriendlyMessage = "This account has been disabled.";
+            break;
+          default:
+            userFriendlyMessage = "An error occurred. Please try again.";
+        }
+        setErrorMessage(userFriendlyMessage); // Set the user-friendly error message
+      }
+    };
+  
+    const handleForgotPassword = () => {
+      window.location.href = `mailto:joshsparkes6@gmail.com?subject=Password Reset&body=Please help me reset my password.`;
+    };
+  
 
   return (
     <ThemeProvider theme={defaultTheme}>
