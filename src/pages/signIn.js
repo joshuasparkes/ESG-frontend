@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -9,9 +9,10 @@ import Logo from "../images/LogoIcon.png";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { signInWithEmailAndPassword, auth } from "../firebase";
+import { signInWithEmailAndPassword, auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getDoc, doc } from "firebase/firestore";
 import GoogleIcon from "../components/googleIcon";
 
 const defaultTheme = createTheme();
@@ -19,6 +20,7 @@ const defaultTheme = createTheme();
 export default function SignInSide() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [userType, setUserType] = React.useState(""); // Initialize userType state
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -27,7 +29,8 @@ export default function SignInSide() {
       const user = result.user;
       const idToken = await user.getIdToken();
       console.log(`Firebase ID token: ${idToken}`);
-      navigate("/dashboard");
+
+      fetchUserType(user);
     } catch (error) {
       console.error("Error signing in with Google:", error);
       setErrorMessage(
@@ -36,12 +39,31 @@ export default function SignInSide() {
     }
   };
 
+  const fetchUserType = async (user) => {
+    // Fetch userType similar to the other component
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      const userType = userSnap.data().userType; // Set userType from Firestore data
+      setUserType(userType); // Update userType state
+
+      // Redirect based on userType
+      if (userType === "charity") {
+        navigate("/myCharity");
+      } else if (userType === "donor") {
+        navigate("/dashboard");
+      } else {
+        // Handle other user types or scenarios here
+      }
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password");
-
+  
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -49,10 +71,8 @@ export default function SignInSide() {
         password
       );
       const user = userCredential.user;
-      const idToken = await user.getIdToken();
-      console.log(`Firebase ID token: ${idToken}`);
-      navigate("/dashboard");
-      setErrorMessage(""); // Clear any existing error message
+  
+      fetchUserType(user);
     } catch (error) {
       console.error("Error signing in:", error.code);
       let userFriendlyMessage = "";
@@ -75,6 +95,7 @@ export default function SignInSide() {
       setErrorMessage(userFriendlyMessage); // Set the user-friendly error message
     }
   };
+  
 
   const handleForgotPassword = () => {
     window.location.href = `mailto:joshsparkes6@gmail.com?subject=Password Reset&body=Please help me reset my password.`;
