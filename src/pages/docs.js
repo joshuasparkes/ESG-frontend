@@ -7,7 +7,7 @@ const Docs = () => {
     <div>
       <NavBarDocs />
       <Container
-        style={{ marginLeft: "305px", marginTop: '30px', maxWidth: `calc(100% - 305px)` }}
+        style={{ marginLeft: "250px", maxWidth: `calc(100% - 305px)` }}
       >
         <Paper elevation={0} style={{ padding: "0px" }}>
           <Typography variant="h4">User Guide for Tracsr</Typography>

@@ -10,6 +10,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 import Navbar from "../components/navBar";
+import { useNavigate } from "react-router-dom";
 import {
   Typography,
   Container,
@@ -47,6 +48,9 @@ const MyCharity = () => {
   const [charityName, setCharityName] = useState("");
   const [charityLocation, setCharityLocation] = useState("");
   const [charityNumber, setCharityNumber] = useState("");
+  const [addingForCharityId, setAddingForCharityId] = useState(null);
+  const [addingForPageId, setAddingForPageId] = useState(null);
+  const navigate = useNavigate();
 
   const handleAddCharity = async () => {
     try {
@@ -78,12 +82,11 @@ const MyCharity = () => {
 
   const handleAddPage = async () => {
     try {
-      // Create a new page document in Firestore
       const pageRef = await addDoc(collection(db, "pages"), {
         title: pageTitle,
         description: pageDescription,
         website: pageWebsite,
-        linkedCharity: selectedCharity, // Assuming you want to link it to the selected charity
+        linkedCharity: addingForCharityId, // Use addingForCharityId here
       });
 
       console.log("Page added with ID: ", pageRef.id);
@@ -97,25 +100,25 @@ const MyCharity = () => {
         },
       ]);
 
-      // Clear the input fields and close the dialog
+      // Clear the input fields, close the dialog, and reset the addingForCharityId
       setPageTitle("");
       setPageDescription("");
       setPageWebsite("");
       setOpenAddPageDialog(false);
+      setAddingForCharityId(null); // Reset addingForCharityId here
     } catch (error) {
       console.error("Error adding page: ", error);
     }
   };
 
   const handleAddFund = async () => {
-    console.log("Linking to Page ID:", selectedPage);
     try {
       const fundRef = await addDoc(collection(db, "funds"), {
         fundName: fundName,
         fundDescription: fundDescription,
         targetAmount: parseFloat(fundTargetAmount),
         objective: objective,
-        linkedPage: selectedPage,
+        linkedPage: addingForPageId, // Use addingForPageId here
       });
 
       console.log("Fund added with ID: ", fundRef.id);
@@ -273,21 +276,24 @@ const MyCharity = () => {
   };
 
   const handleOpenAddPageDialog = (charityId) => {
-    setSelectedCharity(charityId);
+    setAddingForCharityId(charityId); // Set the charity ID for adding a new page
     setOpenAddPageDialog(true);
   };
 
   const handleOpenAddFundDialog = (pageId) => {
-    console.log("Selected Page ID:", pageId);
-    setSelectedPage(pageId);
+    setAddingForPageId(pageId); // Set the page ID for adding a new fund
     setOpenAddFundDialog(true);
+  };
+
+  const handleViewFund = (fundId) => {
+    navigate(`/fund/${fundId}`);
   };
 
   return (
     <div>
       <Navbar />
       <Container
-        style={{ marginLeft: "305px", maxWidth: `calc(100% - 305px)` }}
+        style={{ marginLeft: "250px", maxWidth: `calc(100% - 305px)` }}
       >
         <Typography
           variant="h1"
@@ -319,6 +325,7 @@ const MyCharity = () => {
                 <ListItem
                   button
                   onClick={() => handleSelectCharity(charity.id)}
+                  style={{ borderBottom: "1px lightgrey solid" }}
                 >
                   {editingItem &&
                   editingItem.id === charity.id &&
@@ -367,9 +374,25 @@ const MyCharity = () => {
                       <React.Fragment key={page.id}>
                         <ListItem
                           button
-                          style={{ paddingLeft: "56px" }}
+                          style={{
+                            paddingLeft: "20px",
+                            borderBottom: "1px lightgrey solid",
+                          }}
                           onClick={() => handleSelectPage(page.id)}
                         >
+                          <div
+                                  style={{
+                                    writingMode: "vertical-lr",
+                                    transform: "rotate(180deg)",
+                                    textAlign: "center",
+                                    color: "darkred",
+                                    left: 1,
+                                    marginRight: "20px",
+                                    alignSelf: "stretch", // Stretches the div to the full height of the ListItem
+                                  }}
+                                >
+                                  Page
+                                </div>
                           {editingItem &&
                           editingItem.id === page.id &&
                           editingItem.type === "page" ? (
@@ -415,10 +438,32 @@ const MyCharity = () => {
                           <List
                             component="div"
                             disablePadding
-                            style={{ paddingLeft: "102px" }}
+                            style={{
+                              paddingLeft: "102px",
+                            }}
                           >
                             {funds.map((fund) => (
-                              <ListItem key={fund.id}>
+                              <ListItem
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                }}
+                                key={fund.id}
+                              >
+                                <div
+                                  style={{
+                                    writingMode: "vertical-lr",
+                                    transform: "rotate(180deg)",
+                                    textAlign: "center",
+                                    color: "darkblue",
+                                    left: 1,
+                                    marginRight: "20px",
+                                    alignSelf: "stretch", // Stretches the div to the full height of the ListItem
+                                  }}
+                                >
+                                  Fund
+                                </div>
+
                                 {editingItem &&
                                 editingItem.id === fund.id &&
                                 editingItem.type === "fund" ? (
@@ -441,19 +486,32 @@ const MyCharity = () => {
                                   <>
                                     <ListItemText
                                       primary={fund.fundName}
-                                      secondary={`Target: ${fund.targetAmount}`}
+                                      secondary={`Target: £${fund.targetAmount}`}
                                     />
-                                    <Button
-                                      onClick={() =>
-                                        handleEdit(
-                                          fund.id,
-                                          "fund",
-                                          fund.fundName
-                                        )
-                                      }
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                      }}
                                     >
-                                      Edit
-                                    </Button>
+                                      <Button
+                                        onClick={() => handleViewFund(fund.id)}
+                                      >
+                                        View
+                                      </Button>
+
+                                      <Button
+                                        onClick={() =>
+                                          handleEdit(
+                                            fund.id,
+                                            "fund",
+                                            fund.fundName
+                                          )
+                                        }
+                                      >
+                                        Edit
+                                      </Button>
+                                    </div>
                                   </>
                                 )}
                               </ListItem>

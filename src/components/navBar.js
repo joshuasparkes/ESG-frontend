@@ -4,12 +4,12 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Logo from "../images/tracsr-logomark-type.png";
+import Logo from "../images/tracsr-logomark-type-white.png";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import { useNavigate } from "react-router-dom";
 import { auth, signOut, db } from "../firebase";
-import LinkIcon from "@mui/icons-material/Link";
+// import LinkIcon from "@mui/icons-material/Link";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import SchoolIcon from "@mui/icons-material/School";
 import ArticleIcon from "@mui/icons-material/Article";
@@ -91,8 +91,8 @@ function Navbar() {
         variant="permanent"
         PaperProps={{
           style: {
-            width: "305px",
-            backgroundColor: "white",
+            width: "230px",
+            backgroundColor: "black",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -112,21 +112,19 @@ function Navbar() {
           <img
             src={Logo}
             alt="PMAI Logo"
-            style={{ width: "100px", marginBottom: "20px", marginTop: "30px" }}
+            style={{ width: "100px", marginBottom: "20px", marginTop: "30px", alignSelf:'flex-start', marginLeft:'15px' }}
           />
           <List style={{ width: "100%" }}>
-            {userType === "charity" && (
-              <ListItem
-                button
-                key="myCharity"
-                onClick={() => handleNavigation("myCharity")}
-              >
-                <ListItemIcon>
-                  <VolunteerActivismIcon />
-                </ListItemIcon>
-                <ListItemText primary="My Charities" />
-              </ListItem>
-            )}
+            <ListItem
+              button
+              key="Dashboard"
+              onClick={() => handleNavigation("Dashboard")}
+            >
+              <ListItemIcon>
+                <DonutSmallIcon style={{ color: "white" }} />
+              </ListItemIcon>
+              <ListItemText style={{ color: "white" }} primary="Insights" />
+            </ListItem>
 
             <ListItem
               button
@@ -134,33 +132,41 @@ function Navbar() {
               onClick={() => handleNavigation("findCauses")}
             >
               <ListItemIcon>
-                <SearchIcon />
+                <SearchIcon style={{ color: "white" }} />
               </ListItemIcon>
-              <ListItemText primary="Find Causes" />
+              <ListItemText style={{ color: "white" }} primary="Find Causes" />
             </ListItem>
+
+            {userType === "charity" && (
+              <ListItem
+                button
+                key="myCharity"
+                onClick={() => handleNavigation("myCharity")}
+              >
+                <ListItemIcon>
+                  <VolunteerActivismIcon style={{ color: "white" }} />
+                </ListItemIcon>
+                <ListItemText
+                  style={{ color: "white" }}
+                  primary="My Charities"
+                />
+              </ListItem>
+            )}
 
             {userType === "donor" && (
               <>
-                <ListItem
-                  button
-                  key="Dashboard"
-                  onClick={() => handleNavigation("Dashboard")}
-                >
-                  <ListItemIcon>
-                    <DonutSmallIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Allocation" />
-                </ListItem>
-
                 <ListItem
                   button
                   key="Create Reports"
                   onClick={() => handleNavigation("CreateReports")}
                 >
                   <ListItemIcon>
-                    <ArticleIcon />
+                    <ArticleIcon style={{ color: "white" }} />
                   </ListItemIcon>
-                  <ListItemText primary="Create Reports" />
+                  <ListItemText
+                    style={{ color: "white" }}
+                    primary="Create Reports"
+                  />
                 </ListItem>
 
                 <ListItem
@@ -169,12 +175,15 @@ function Navbar() {
                   onClick={() => handleNavigation("Learn")}
                 >
                   <ListItemIcon>
-                    <SchoolIcon />
+                    <SchoolIcon style={{ color: "white" }} />
                   </ListItemIcon>
-                  <ListItemText primary="Learn About ESG" />
+                  <ListItemText
+                    style={{ color: "white" }}
+                    primary="Learn About ESG"
+                  />
                 </ListItem>
 
-                <ListItem
+                {/* <ListItem
                   button
                   key="Integrations"
                   onClick={() => handleNavigation("Integrations")}
@@ -183,7 +192,7 @@ function Navbar() {
                     <LinkIcon />
                   </ListItemIcon>
                   <ListItemText primary="Integrations" />
-                </ListItem>
+                </ListItem> */}
               </>
             )}
           </List>
@@ -192,9 +201,9 @@ function Navbar() {
         <List style={{ width: "100%" }}>
           <ListItem button key="Docs" onClick={() => handleNavigation("Docs")}>
             <ListItemIcon>
-              <HelpCenterIcon />
+              <HelpCenterIcon style={{ color: "white" }} />
             </ListItemIcon>
-            <ListItemText primary="Docs" />
+            <ListItemText style={{ color: "white" }} primary="Docs" />
           </ListItem>
 
           <ListItem
@@ -203,16 +212,19 @@ function Navbar() {
             onClick={() => handleNavigation("report")}
           >
             <ListItemIcon>
-              <BugReportIcon />
+              <BugReportIcon style={{ color: "white" }} />
             </ListItemIcon>
-            <ListItemText primary="Report an Issue" />
+            <ListItemText
+              style={{ color: "white" }}
+              primary="Report an Issue"
+            />
           </ListItem>
 
           <ListItem button key="SignOut" onClick={handleSignOut}>
             <ListItemIcon>
-              <ExitToAppRoundedIcon />
+              <ExitToAppRoundedIcon style={{ color: "white" }} />
             </ListItemIcon>
-            <ListItemText primary="Sign Out" />
+            <ListItemText style={{ color: "white" }} primary="Sign Out" />
           </ListItem>
         </List>
       </Drawer>

@@ -1,7 +1,18 @@
 import React from "react";
 import Navbar from "../components/navBar";
-import { Typography, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material";
-import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import {
+  Typography,
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+} from "@mui/material";
+import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 
 const CreateReports = () => {
   const mockReports = [
@@ -15,11 +26,25 @@ const CreateReports = () => {
   return (
     <div>
       <Navbar />
-      <Container style={{ marginLeft: "305px", maxWidth: `calc(100% - 305px)` }}>
-        <Typography variant="h1" style={{ fontSize: "48px", marginTop: "30px", marginBottom: "20px", color: "#6D7580" }}>
+      <Container
+        style={{ marginLeft: "250px", maxWidth: `calc(100% - 305px)` }}
+      >
+        <Typography
+          variant="h1"
+          style={{
+            fontSize: "48px",
+            marginTop: "30px",
+            marginBottom: "20px",
+            color: "#6D7580",
+          }}
+        >
           Create Reports
         </Typography>
-        <Button variant="contained" color="primary" style={{ marginBottom: "20px" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginBottom: "20px" }}
+        >
           Generate Report
         </Button>
         <TableContainer elevation={0} component={Paper}>

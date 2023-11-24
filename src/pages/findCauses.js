@@ -14,8 +14,10 @@ import {
   ListItemText,
 } from "@mui/material";
 import TabPanel from "../components/TabPanel";
+import { useNavigate } from "react-router-dom";
 
 const FindCauses = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
   const [allData, setAllData] = useState({
@@ -25,20 +27,21 @@ const FindCauses = () => {
   });
   const [currentTab, setCurrentTab] = useState(0);
 
+  const handleViewFund = (fundId) => {
+    console.log("Navigating to fund with ID:", fundId);
+    navigate(`/fund/${fundId}`);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const fundsSnapshot = await getDocs(collection(db, "funds"));
       const charitiesSnapshot = await getDocs(collection(db, "charities"));
       const pagesSnapshot = await getDocs(collection(db, "pages"));
 
-      console.log("Funds data:", fundsSnapshot.docs);
-      console.log("Charities data:", charitiesSnapshot.docs);
-      console.log("Pages data:", pagesSnapshot.docs);
-
       setAllData({
-        funds: fundsSnapshot.docs.map((doc) => doc.data()),
-        charities: charitiesSnapshot.docs.map((doc) => doc.data()),
-        pages: pagesSnapshot.docs.map((doc) => doc.data()),
+        funds: fundsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+        charities: charitiesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+        pages: pagesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
       });
     };
 
@@ -93,7 +96,7 @@ const FindCauses = () => {
     <div>
       <Navbar />
       <Container
-        style={{ marginLeft: "305px", maxWidth: `calc(100% - 305px)` }}
+        style={{ marginLeft: "250px", maxWidth: `calc(100% - 305px)` }}
       >
         <Typography
           variant="h1"
@@ -193,6 +196,11 @@ const FindCauses = () => {
                     borderWidth: "0px",
                   }}
                   key={index}
+                  button
+                  onClick={() => {
+                    console.log("Fund item clicked with ID:", result.id);
+                    handleViewFund(result.id);
+                  }}
                 >
                   <ListItemText
                     primary={result.name || result.fundName || result.title}

@@ -19,6 +19,7 @@ import OnboardingDonor from "./pages/onboardingDonor";
 import OnboardingCharity from "./pages/onboardingCharity";
 import FindCauses from "./pages/findCauses";
 import MyCharity from "./pages/myCharity";
+import FundPage from "./pages/fund";
 
 function App() {
   return (
@@ -40,7 +41,7 @@ function App() {
         <Route path="/docs" element={<Docs />} />
         <Route path="/findCauses" element={<FindCauses />} />
         <Route path="/myCharity" element={<MyCharity />} />
-
+        <Route path="/fund/:fundId" element={<FundPage />} />
       </Routes>
     </Router>
   );

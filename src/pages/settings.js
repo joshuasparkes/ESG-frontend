@@ -84,7 +84,7 @@ function Settings() {
     <div>
       <Navbar />
       <Container
-        style={{ marginLeft: "305px", maxWidth: `calc(100% - 305px)` }}
+        style={{ marginLeft: "250px", maxWidth: `calc(100% - 305px)` }}
       >
         <Box my={4}>
           <Typography

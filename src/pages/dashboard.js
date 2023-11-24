@@ -7,7 +7,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useAuth } from "../components/authContext";
 import Navbar from "../components/navBar";
 import PieChartComponent from "../components/pie";
-import Charities from "../components/charities";
+// import Charities from "../components/charities";
+import ObjectivesTable from "../components/objectivesTable";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -34,7 +35,6 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    
     let isComponentMounted = true;
 
     const fetchUserProfile = async () => {
@@ -72,7 +72,7 @@ function Dashboard() {
       <Container
         style={{
           flexGrow: 1,
-          marginLeft: "305px",
+          marginLeft: "250px",
           maxWidth: `calc(100% - 305px)`,
           display: "flex",
           flexDirection: "column",
@@ -122,7 +122,7 @@ function Dashboard() {
             variant="h1"
             style={{ fontSize: "48px", marginTop: "30px", color: "#6D7580" }}
           >
-            Allocation
+            Insights
           </Typography>
           <Typography
             variant="h2"
@@ -144,7 +144,8 @@ function Dashboard() {
               width: "100%",
             }}
           >
-            <Charities userId={userId} />
+            {/* <Charities userId={userId} /> */}
+            <ObjectivesTable />
           </Box>
         </div>
       </Container>
