@@ -39,6 +39,7 @@ const MyCharity = () => {
   const [fundName, setFundName] = useState("");
   const [fundDescription, setFundDescription] = useState("");
   const [fundTargetAmount, setFundTargetAmount] = useState("");
+  const [objective, setObjective] = useState("");
   const [pageTitle, setPageTitle] = useState("");
   const [pageDescription, setPageDescription] = useState("");
   const [pageWebsite, setPageWebsite] = useState("");
@@ -46,16 +47,6 @@ const MyCharity = () => {
   const [charityName, setCharityName] = useState("");
   const [charityLocation, setCharityLocation] = useState("");
   const [charityNumber, setCharityNumber] = useState("");
-
-  const handleOpenAddPageDialog = (charityId) => {
-    setSelectedCharity(charityId);
-    setOpenAddPageDialog(true);
-  };
-
-  const handleOpenAddFundDialog = (pageId) => {
-    setSelectedPage(pageId);
-    setOpenAddFundDialog(true);
-  };
 
   const handleAddCharity = async () => {
     try {
@@ -66,6 +57,16 @@ const MyCharity = () => {
         charityLead: auth.currentUser.uid,
       });
       console.log("Charity added with ID: ", charityRef.id);
+      // Update the charities state
+      setCharities((prevCharities) => [
+        ...prevCharities,
+        {
+          id: charityRef.id,
+          name: charityName,
+          location: charityLocation,
+          number: charityNumber,
+        },
+      ]);
       setCharityName("");
       setCharityLocation("");
       setCharityNumber("");
@@ -86,6 +87,15 @@ const MyCharity = () => {
       });
 
       console.log("Page added with ID: ", pageRef.id);
+      setPages((prevPages) => [
+        ...prevPages,
+        {
+          id: pageRef.id,
+          title: pageTitle,
+          description: pageDescription,
+          website: pageWebsite,
+        },
+      ]);
 
       // Clear the input fields and close the dialog
       setPageTitle("");
@@ -98,21 +108,33 @@ const MyCharity = () => {
   };
 
   const handleAddFund = async () => {
+    console.log("Linking to Page ID:", selectedPage);
     try {
-      // Create a new fund document in Firestore
       const fundRef = await addDoc(collection(db, "funds"), {
         fundName: fundName,
         fundDescription: fundDescription,
-        targetAmount: parseFloat(fundTargetAmount), // Convert to a number if needed
-        linkedPage: selectedPage, // Assuming you want to link it to the selected page
+        targetAmount: parseFloat(fundTargetAmount),
+        objective: objective,
+        linkedPage: selectedPage,
       });
 
       console.log("Fund added with ID: ", fundRef.id);
 
-      // Clear the input fields and close the dialog
+      setFunds((prevFunds) => [
+        ...prevFunds,
+        {
+          id: fundRef.id,
+          fundName: fundName,
+          fundDescription: fundDescription,
+          targetAmount: parseFloat(fundTargetAmount),
+          objective: objective,
+        },
+      ]);
+
       setFundName("");
       setFundDescription("");
       setFundTargetAmount("");
+      setObjective("");
       setOpenAddFundDialog(false);
     } catch (error) {
       console.error("Error adding fund: ", error);
@@ -250,6 +272,17 @@ const MyCharity = () => {
     }
   };
 
+  const handleOpenAddPageDialog = (charityId) => {
+    setSelectedCharity(charityId);
+    setOpenAddPageDialog(true);
+  };
+
+  const handleOpenAddFundDialog = (pageId) => {
+    console.log("Selected Page ID:", pageId);
+    setSelectedPage(pageId);
+    setOpenAddFundDialog(true);
+  };
+
   return (
     <div>
       <Navbar />
@@ -269,7 +302,11 @@ const MyCharity = () => {
           <Button
             variant="contained"
             color="primary"
-            style={{ float: "right", marginBottom: "10px" }}
+            style={{
+              float: "right",
+              marginBottom: "10px",
+              justifySelf: "center",
+            }}
             onClick={() => setOpenAddCharityDialog(true)}
           >
             New Charity
@@ -356,9 +393,7 @@ const MyCharity = () => {
                               <Button
                                 variant="outlined"
                                 size="small"
-                                onClick={() =>
-                                  handleOpenAddFundDialog(charity.id)
-                                }
+                                onClick={() => handleOpenAddFundDialog(page.id)}
                               >
                                 Add Fund
                               </Button>
@@ -508,6 +543,14 @@ const MyCharity = () => {
             value={fundTargetAmount}
             onChange={(e) => setFundTargetAmount(e.target.value)}
           />
+          <TextField
+            margin="dense"
+            label="Objective"
+            fullWidth
+            variant="outlined"
+            value={objective}
+            onChange={(e) => setObjective(e.target.value)}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAddFundDialog(false)}>Cancel</Button>
@@ -523,19 +566,23 @@ const MyCharity = () => {
         <DialogContent>
           <TextField
             label="Name"
+            margin="dense"
             fullWidth
+            variant="outlined"
             value={charityName}
             onChange={(e) => setCharityName(e.target.value)}
           />
           <TextField
             label="Location"
             fullWidth
+            margin="dense"
             value={charityLocation}
             onChange={(e) => setCharityLocation(e.target.value)}
           />
           <TextField
             label="Number"
             fullWidth
+            margin="dense"
             value={charityNumber}
             onChange={(e) => setCharityNumber(e.target.value)}
           />
