@@ -1,0 +1,559 @@
+import React, { useState, useEffect } from "react";
+import { auth, db } from "../firebase"; // Import your Firebase configuration
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  doc,
+  addDoc,
+} from "firebase/firestore";
+import Navbar from "../components/navBar";
+import {
+  Typography,
+  Container,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  Collapse,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+
+const MyCharity = () => {
+  const [charities, setCharities] = useState([]);
+  const [selectedCharity, setSelectedCharity] = useState(null);
+  const [pages, setPages] = useState([]);
+  const [selectedPage, setSelectedPage] = useState(null);
+  const [funds, setFunds] = useState([]);
+  const [editingItem, setEditingItem] = useState(null);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [openAddPageDialog, setOpenAddPageDialog] = useState(false);
+  const [openAddFundDialog, setOpenAddFundDialog] = useState(false);
+  const [fundName, setFundName] = useState("");
+  const [fundDescription, setFundDescription] = useState("");
+  const [fundTargetAmount, setFundTargetAmount] = useState("");
+  const [pageTitle, setPageTitle] = useState("");
+  const [pageDescription, setPageDescription] = useState("");
+  const [pageWebsite, setPageWebsite] = useState("");
+  const [openAddCharityDialog, setOpenAddCharityDialog] = useState(false);
+  const [charityName, setCharityName] = useState("");
+  const [charityLocation, setCharityLocation] = useState("");
+  const [charityNumber, setCharityNumber] = useState("");
+
+  const handleOpenAddPageDialog = (charityId) => {
+    setSelectedCharity(charityId);
+    setOpenAddPageDialog(true);
+  };
+
+  const handleOpenAddFundDialog = (pageId) => {
+    setSelectedPage(pageId);
+    setOpenAddFundDialog(true);
+  };
+
+  const handleAddCharity = async () => {
+    try {
+      const charityRef = await addDoc(collection(db, "charities"), {
+        name: charityName,
+        location: charityLocation,
+        number: charityNumber,
+        charityLead: auth.currentUser.uid,
+      });
+      console.log("Charity added with ID: ", charityRef.id);
+      setCharityName("");
+      setCharityLocation("");
+      setCharityNumber("");
+      setOpenAddCharityDialog(false);
+    } catch (error) {
+      console.error("Error adding charity: ", error);
+    }
+  };
+
+  const handleAddPage = async () => {
+    try {
+      // Create a new page document in Firestore
+      const pageRef = await addDoc(collection(db, "pages"), {
+        title: pageTitle,
+        description: pageDescription,
+        website: pageWebsite,
+        linkedCharity: selectedCharity, // Assuming you want to link it to the selected charity
+      });
+
+      console.log("Page added with ID: ", pageRef.id);
+
+      // Clear the input fields and close the dialog
+      setPageTitle("");
+      setPageDescription("");
+      setPageWebsite("");
+      setOpenAddPageDialog(false);
+    } catch (error) {
+      console.error("Error adding page: ", error);
+    }
+  };
+
+  const handleAddFund = async () => {
+    try {
+      // Create a new fund document in Firestore
+      const fundRef = await addDoc(collection(db, "funds"), {
+        fundName: fundName,
+        fundDescription: fundDescription,
+        targetAmount: parseFloat(fundTargetAmount), // Convert to a number if needed
+        linkedPage: selectedPage, // Assuming you want to link it to the selected page
+      });
+
+      console.log("Fund added with ID: ", fundRef.id);
+
+      // Clear the input fields and close the dialog
+      setFundName("");
+      setFundDescription("");
+      setFundTargetAmount("");
+      setOpenAddFundDialog(false);
+    } catch (error) {
+      console.error("Error adding fund: ", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCharities = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const charitiesRef = collection(db, "charities");
+        const q = query(charitiesRef, where("charityLead", "==", user.uid));
+        try {
+          const querySnapshot = await getDocs(q);
+          const fetchedCharities = [];
+          querySnapshot.forEach((doc) => {
+            fetchedCharities.push({ id: doc.id, ...doc.data() });
+          });
+          setCharities(fetchedCharities);
+        } catch (error) {
+          console.error("Error fetching charities: ", error);
+        }
+      }
+    };
+
+    fetchCharities();
+  }, []);
+
+  const handleEdit = (itemId, itemType, currentTitle) => {
+    setEditingItem({ id: itemId, type: itemType });
+    setEditedTitle(currentTitle);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingItem) return;
+
+    const refPath =
+      editingItem.type === "charity"
+        ? "charities"
+        : editingItem.type === "page"
+        ? "pages"
+        : "funds";
+
+    const updateField =
+      editingItem.type === "charity"
+        ? { name: editedTitle }
+        : editingItem.type === "page"
+        ? { title: editedTitle }
+        : { fundName: editedTitle };
+
+    const itemRef = doc(db, refPath, editingItem.id);
+
+    try {
+      await updateDoc(itemRef, updateField);
+      console.log("Item updated successfully");
+
+      // Update local state
+      if (editingItem.type === "charity") {
+        setCharities((prevCharities) =>
+          prevCharities.map((charity) =>
+            charity.id === editingItem.id
+              ? { ...charity, name: editedTitle }
+              : charity
+          )
+        );
+      } else if (editingItem.type === "page") {
+        setPages((prevPages) =>
+          prevPages.map((page) =>
+            page.id === editingItem.id ? { ...page, title: editedTitle } : page
+          )
+        );
+      } else {
+        setFunds((prevFunds) =>
+          prevFunds.map((fund) =>
+            fund.id === editingItem.id
+              ? { ...fund, fundName: editedTitle }
+              : fund
+          )
+        );
+      }
+
+      setEditingItem(null);
+      setEditedTitle("");
+    } catch (error) {
+      console.error("Error updating item: ", error);
+    }
+  };
+
+  const handleSelectCharity = async (charityId) => {
+    if (charityId === selectedCharity) {
+      // Collapse the currently selected charity
+      setSelectedCharity(null);
+      setPages([]);
+    } else {
+      // Expand the selected charity and fetch its pages
+      setSelectedCharity(charityId);
+      setSelectedPage(null); // Reset selected page
+
+      const pagesRef = collection(db, "pages");
+      const q = query(pagesRef, where("linkedCharity", "==", charityId));
+      try {
+        const querySnapshot = await getDocs(q);
+        const fetchedPages = [];
+        querySnapshot.forEach((doc) => {
+          fetchedPages.push({ id: doc.id, ...doc.data() });
+        });
+        setPages(fetchedPages);
+      } catch (error) {
+        console.error("Error fetching pages: ", error);
+      }
+    }
+  };
+
+  const handleSelectPage = async (pageId) => {
+    if (pageId === selectedPage) {
+      // Collapse the currently selected page
+      setSelectedPage(null);
+      setFunds([]);
+    } else {
+      // Expand the selected page and fetch its funds
+      setSelectedPage(pageId);
+
+      const fundsRef = collection(db, "funds");
+      const q = query(fundsRef, where("linkedPage", "==", pageId));
+      try {
+        const querySnapshot = await getDocs(q);
+        const fetchedFunds = [];
+        querySnapshot.forEach((doc) => {
+          fetchedFunds.push({ id: doc.id, ...doc.data() });
+        });
+        setFunds(fetchedFunds);
+      } catch (error) {
+        console.error("Error fetching funds: ", error);
+      }
+    }
+  };
+
+  return (
+    <div>
+      <Navbar />
+      <Container
+        style={{ marginLeft: "305px", maxWidth: `calc(100% - 305px)` }}
+      >
+        <Typography
+          variant="h1"
+          style={{
+            fontSize: "48px",
+            marginTop: "30px",
+            marginBottom: "20px",
+            color: "#6D7580",
+          }}
+        >
+          My Charities
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ float: "right", marginBottom: "10px" }}
+            onClick={() => setOpenAddCharityDialog(true)}
+          >
+            New Charity
+          </Button>
+        </Typography>
+        <Paper elevation={0} style={{ padding: "10px", marginTop: "20px" }}>
+          <List>
+            {charities.map((charity) => (
+              <React.Fragment key={charity.id}>
+                <ListItem
+                  button
+                  onClick={() => handleSelectCharity(charity.id)}
+                >
+                  {editingItem &&
+                  editingItem.id === charity.id &&
+                  editingItem.type === "charity" ? (
+                    <div>
+                      <TextField
+                        value={editedTitle}
+                        onChange={(e) => setEditedTitle(e.target.value)}
+                      />
+                      <Button
+                        onClick={() => handleSaveEdit(charity.id, "charity")}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <ListItemText
+                        primary={charity.name}
+                        secondary={charity.location}
+                      />
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleOpenAddPageDialog(charity.id)}
+                      >
+                        Add Page
+                      </Button>
+                      <Button
+                        onClick={() =>
+                          handleEdit(charity.id, "charity", charity.name)
+                        }
+                      >
+                        Edit
+                      </Button>
+                    </>
+                  )}
+                </ListItem>
+                <Collapse
+                  in={selectedCharity === charity.id}
+                  timeout="auto"
+                  unmountOnExit
+                >
+                  <List component="div" disablePadding>
+                    {pages.map((page) => (
+                      <React.Fragment key={page.id}>
+                        <ListItem
+                          button
+                          style={{ paddingLeft: "56px" }}
+                          onClick={() => handleSelectPage(page.id)}
+                        >
+                          {editingItem &&
+                          editingItem.id === page.id &&
+                          editingItem.type === "page" ? (
+                            <div>
+                              <TextField
+                                value={editedTitle}
+                                onChange={(e) => setEditedTitle(e.target.value)}
+                              />
+                              <Button
+                                onClick={() => handleSaveEdit(page.id, "page")}
+                              >
+                                Save
+                              </Button>
+                            </div>
+                          ) : (
+                            <>
+                              <ListItemText
+                                primary={page.title}
+                                secondary={page.description}
+                              />
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={() =>
+                                  handleOpenAddFundDialog(charity.id)
+                                }
+                              >
+                                Add Fund
+                              </Button>
+                              <Button
+                                onClick={() =>
+                                  handleEdit(page.id, "page", page.title)
+                                }
+                              >
+                                Edit
+                              </Button>
+                            </>
+                          )}
+                        </ListItem>
+                        <Collapse
+                          in={selectedPage === page.id}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <List
+                            component="div"
+                            disablePadding
+                            style={{ paddingLeft: "102px" }}
+                          >
+                            {funds.map((fund) => (
+                              <ListItem key={fund.id}>
+                                {editingItem &&
+                                editingItem.id === fund.id &&
+                                editingItem.type === "fund" ? (
+                                  <div>
+                                    <TextField
+                                      value={editedTitle}
+                                      onChange={(e) =>
+                                        setEditedTitle(e.target.value)
+                                      }
+                                    />
+                                    <Button
+                                      onClick={() =>
+                                        handleSaveEdit(fund.id, "fund")
+                                      }
+                                    >
+                                      Save
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <ListItemText
+                                      primary={fund.fundName}
+                                      secondary={`Target: ${fund.targetAmount}`}
+                                    />
+                                    <Button
+                                      onClick={() =>
+                                        handleEdit(
+                                          fund.id,
+                                          "fund",
+                                          fund.fundName
+                                        )
+                                      }
+                                    >
+                                      Edit
+                                    </Button>
+                                  </>
+                                )}
+                              </ListItem>
+                            ))}
+                          </List>
+                        </Collapse>
+                      </React.Fragment>
+                    ))}
+                  </List>
+                </Collapse>
+              </React.Fragment>
+            ))}
+          </List>
+        </Paper>
+      </Container>
+      <Dialog
+        open={openAddPageDialog}
+        onClose={() => setOpenAddPageDialog(false)}
+      >
+        <DialogTitle>Add New Page</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Page Title"
+            fullWidth
+            variant="outlined"
+            value={pageTitle}
+            onChange={(e) => setPageTitle(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Description"
+            fullWidth
+            multiline
+            rows={4}
+            variant="outlined"
+            value={pageDescription}
+            onChange={(e) => setPageDescription(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Website Address"
+            fullWidth
+            variant="outlined"
+            value={pageWebsite}
+            onChange={(e) => setPageWebsite(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenAddPageDialog(false)}>Cancel</Button>
+          <Button onClick={handleAddPage}>Add Page</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog for adding a new fund */}
+      <Dialog
+        open={openAddFundDialog}
+        onClose={() => setOpenAddFundDialog(false)}
+      >
+        <DialogTitle>Add New Fund</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Fund Name"
+            fullWidth
+            variant="outlined"
+            value={fundName}
+            onChange={(e) => setFundName(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Description"
+            fullWidth
+            multiline
+            rows={4}
+            variant="outlined"
+            value={fundDescription}
+            onChange={(e) => setFundDescription(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Target Amount"
+            fullWidth
+            variant="outlined"
+            value={fundTargetAmount}
+            onChange={(e) => setFundTargetAmount(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenAddFundDialog(false)}>Cancel</Button>
+          <Button onClick={handleAddFund}>Add Fund</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openAddCharityDialog}
+        onClose={() => setOpenAddCharityDialog(false)}
+      >
+        <DialogTitle>Add New Charity</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Name"
+            fullWidth
+            value={charityName}
+            onChange={(e) => setCharityName(e.target.value)}
+          />
+          <TextField
+            label="Location"
+            fullWidth
+            value={charityLocation}
+            onChange={(e) => setCharityLocation(e.target.value)}
+          />
+          <TextField
+            label="Number"
+            fullWidth
+            value={charityNumber}
+            onChange={(e) => setCharityNumber(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setOpenAddCharityDialog(false)}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleAddCharity} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+};
+
+export default MyCharity;

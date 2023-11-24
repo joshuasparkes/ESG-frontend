@@ -1,5 +1,5 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
+import React, { useState } from "react";
+import { Button, FormControlLabel, RadioGroup, Radio } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
@@ -20,6 +20,7 @@ const defaultTheme = createTheme();
 export default function SignUp() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [userType, setUserType] = useState("");
 
   const provider = new GoogleAuthProvider();
 
@@ -28,16 +29,31 @@ export default function SignUp() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // Store additional user info in Firestore, if needed.
+      // Extract first and last name from displayName if available
+      let firstName = "";
+      let lastName = "";
+      if (user.displayName) {
+        const names = user.displayName.split(" ");
+        firstName = names[0];
+        lastName = names.length > 1 ? names[names.length - 1] : "";
+      }
+      console.log("User Type:", userType); // Add this to debug
+
+      // Store additional user info in Firestore
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
-        firstName: user.displayName,
-        lastName: "", // or extract from user object
+        firstName: firstName,
+        lastName: lastName,
         email: user.email,
         createdAt: serverTimestamp(),
+        userType: userType, // Add userType to Firestore document
       });
 
-      navigate("/onboarding");
+      if (userType === "charity") {
+        navigate("/onboardingCharity");
+      } else if (userType === "donor") {
+        navigate("/onboardingDonor");
+      }
     } catch (error) {
       console.error("Error signing in with Google: ", error);
       setErrorMessage("An error occurred while signing in with Google.");
@@ -47,6 +63,7 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
     const email = data.get("email");
     const password = data.get("password");
     const firstName = data.get("firstName");
@@ -60,16 +77,22 @@ export default function SignUp() {
       );
       const user = userCredential.user;
 
-      const idToken = await user.getIdToken();
-      console.log(`Firebase ID token: ${idToken}`);
+      console.log("User Type:", userType); // Add this to debug
+
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         firstName: firstName,
         lastName: lastName,
         email: email,
         createdAt: serverTimestamp(),
+        userType: userType, // Add userType to Firestore document
       });
-      navigate("/onboarding");
+
+      if (userType === "charity") {
+        navigate("/onboardingCharity");
+      } else if (userType === "donor") {
+        navigate("/onboardingDonor");
+      }
       setErrorMessage(""); // Clear any existing error message
     } catch (error) {
       console.error("Error signing up:", error.code);
@@ -123,6 +146,27 @@ export default function SignUp() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography component="legend">I represent a</Typography>
+                <RadioGroup
+                  row
+                  aria-label="userType"
+                  name="userType"
+                  value={userType}
+                  onChange={(e) => setUserType(e.target.value)}
+                >
+                  <FormControlLabel
+                    value="charity"
+                    control={<Radio />}
+                    label="Charity"
+                  />
+                  <FormControlLabel
+                    value="donor"
+                    control={<Radio />}
+                    label="Business"
+                  />
+                </RadioGroup>
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"

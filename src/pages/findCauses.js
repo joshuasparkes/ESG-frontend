@@ -1,0 +1,215 @@
+import React, { useState, useEffect } from "react";
+import { db } from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
+import Navbar from "../components/navBar";
+import {
+  TextField,
+  Typography,
+  Container,
+  Paper,
+  Tab,
+  Tabs,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
+import TabPanel from "../components/TabPanel";
+
+const FindCauses = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [allData, setAllData] = useState({
+    funds: [],
+    charities: [],
+    pages: [],
+  });
+  const [currentTab, setCurrentTab] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fundsSnapshot = await getDocs(collection(db, "funds"));
+      const charitiesSnapshot = await getDocs(collection(db, "charities"));
+      const pagesSnapshot = await getDocs(collection(db, "pages"));
+
+      console.log("Funds data:", fundsSnapshot.docs);
+      console.log("Charities data:", charitiesSnapshot.docs);
+      console.log("Pages data:", pagesSnapshot.docs);
+
+      setAllData({
+        funds: fundsSnapshot.docs.map((doc) => doc.data()),
+        charities: charitiesSnapshot.docs.map((doc) => doc.data()),
+        pages: pagesSnapshot.docs.map((doc) => doc.data()),
+      });
+    };
+
+    fetchData();
+  }, []);
+
+  const handleChangeTab = (event, newValue) => {
+    setCurrentTab(newValue);
+  };
+
+  const handleSearch = () => {
+    if (searchQuery) {
+      let filteredData = [];
+
+      switch (currentTab) {
+        case 0: // Charities
+          filteredData = allData.charities.filter(
+            (charity) =>
+              charity.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              charity.location.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+          break;
+        case 1: // Pages
+          filteredData = allData.pages.filter(
+            (page) =>
+              page.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              page.description.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+          break;
+        case 2: // Funds
+          filteredData = allData.funds.filter((fund) => {
+            const nameMatch =
+              fund.fundName &&
+              fund.fundName.toLowerCase().includes(searchQuery.toLowerCase());
+            const descriptionMatch =
+              fund.fundDescription &&
+              fund.fundDescription
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase());
+            return nameMatch || descriptionMatch;
+          });
+          break;
+        default:
+          break;
+      }
+
+      setResults(filteredData);
+    }
+  };
+
+  return (
+    <div>
+      <Navbar />
+      <Container
+        style={{ marginLeft: "305px", maxWidth: `calc(100% - 305px)` }}
+      >
+        <Typography
+          variant="h1"
+          style={{
+            fontSize: "48px",
+            marginTop: "30px",
+            marginBottom: "20px",
+            color: "#6D7580",
+          }}
+        >
+          Find Causes
+        </Typography>
+        <TextField
+          fullWidth
+          label="Search for causes"
+          variant="outlined"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+        />
+        <Paper elevation={0} style={{ marginTop: "20px" }}>
+          <Tabs
+            value={currentTab}
+            onChange={handleChangeTab}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            <Tab label="Charities" />
+            <Tab label="Pages" />
+            <Tab label="Funds" />
+          </Tabs>
+          <TabPanel value={currentTab} index={0}>
+            {/* Render filtered charities */}
+            <List>
+              {results.map((result, index) => (
+                // Render the relevant information from the documents here
+                // You can differentiate the collection by checking which data fields are present
+                <ListItem
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    textAlign: "left",
+                    borderWidth: "0px",
+                  }}
+                  key={index}
+                >
+                  <ListItemText
+                    primary={result.name || result.fundName || result.title}
+                    secondary={
+                      result.location ||
+                      result.fundDescription ||
+                      result.description
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </TabPanel>
+          <TabPanel value={currentTab} index={1}>
+            {/* Render filtered pages */}
+            <List>
+              {results.map((result, index) => (
+                // Render the relevant information from the documents here
+                // You can differentiate the collection by checking which data fields are present
+                <ListItem
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    textAlign: "left",
+                    borderWidth: "0px",
+                  }}
+                  key={index}
+                >
+                  <ListItemText
+                    primary={result.name || result.fundName || result.title}
+                    secondary={
+                      result.location ||
+                      result.fundDescription ||
+                      result.description
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </TabPanel>
+          <TabPanel value={currentTab} index={2}>
+            {/* Render filtered funds */}
+            <List>
+              {results.map((result, index) => (
+                // Render the relevant information from the documents here
+                // You can differentiate the collection by checking which data fields are present
+                <ListItem
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    textAlign: "left",
+                    borderWidth: "0px",
+                  }}
+                  key={index}
+                >
+                  <ListItemText
+                    primary={result.name || result.fundName || result.title}
+                    secondary={
+                      result.location ||
+                      result.fundDescription ||
+                      result.description
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </TabPanel>
+        </Paper>
+      </Container>
+    </div>
+  );
+};
+
+export default FindCauses;

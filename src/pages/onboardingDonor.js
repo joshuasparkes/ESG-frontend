@@ -23,7 +23,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const Onboarding = () => {
+const OnboardingDonor = () => {
   const navigate = useNavigate();
   const [activeScreen, setActiveScreen] = useState(1);
   const [organizationName, setOrganizationName] = useState("");
@@ -373,4 +373,4 @@ const Onboarding = () => {
   );
 };
 
-export default Onboarding;
+export default OnboardingDonor;

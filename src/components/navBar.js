@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -8,14 +8,20 @@ import Logo from "../images/tracsr-logomark-type.png";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import { useNavigate } from "react-router-dom";
-import { auth, signOut } from "../firebase";
+import { auth, signOut, db } from "../firebase";
 import LinkIcon from "@mui/icons-material/Link";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import SchoolIcon from "@mui/icons-material/School";
 import ArticleIcon from "@mui/icons-material/Article";
-import HelpCenterIcon from '@mui/icons-material/HelpCenter'
+import HelpCenterIcon from "@mui/icons-material/HelpCenter";
+import SearchIcon from "@mui/icons-material/Search";
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
+import { doc, getDoc } from "firebase/firestore";
 
 function Navbar() {
+  const [userType, setUserType] = useState("");
+  const navigate = useNavigate();
+
   const handleSignOut = async () => {
     try {
       await signOut(auth);
@@ -26,10 +32,29 @@ function Navbar() {
     }
   };
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchUserType = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setUserType(userSnap.data().userType); // Assuming the field is called 'userType'
+        }
+      }
+    };
+
+    fetchUserType();
+  }, []);
 
   const handleNavigation = (page) => {
     switch (page) {
+      case "myCharity":
+        navigate("/myCharity");
+        break;
+      case "findCauses":
+        navigate("/findCauses");
+        break;
       case "Dashboard":
         navigate("/dashboard");
         break;
@@ -39,7 +64,7 @@ function Navbar() {
       case "My Apps":
         navigate("/myApps");
         break;
-      case "Report an Issue":
+      case "report":
         navigate("/report");
         break;
       case "Learn":
@@ -48,7 +73,7 @@ function Navbar() {
       case "settings":
         navigate("/settings");
         break;
-        case "Docs":
+      case "Docs":
         window.open("/docs", "_blank");
         break;
       case "CreateReports":
@@ -87,70 +112,95 @@ function Navbar() {
           <img
             src={Logo}
             alt="PMAI Logo"
-            style={{ width: "100px", marginBottom: "0px", marginTop: "10px" }}
+            style={{ width: "100px", marginBottom: "20px", marginTop: "30px" }}
           />
           <List style={{ width: "100%" }}>
-            <ListItem
-              button
-              key="Dashboard"
-              onClick={() => handleNavigation("Dashboard")}
-            >
-              <ListItemIcon>
-                <DonutSmallIcon />
-              </ListItemIcon>
-              <ListItemText primary="Allocation" />
-            </ListItem>
+            {userType === "charity" && (
+              <ListItem
+                button
+                key="myCharity"
+                onClick={() => handleNavigation("myCharity")}
+              >
+                <ListItemIcon>
+                  <VolunteerActivismIcon />
+                </ListItemIcon>
+                <ListItemText primary="My Charities" />
+              </ListItem>
+            )}
 
             <ListItem
               button
-              key="Integrations"
-              onClick={() => handleNavigation("Integrations")}
+              key="findCauses"
+              onClick={() => handleNavigation("findCauses")}
             >
               <ListItemIcon>
-                <LinkIcon />
+                <SearchIcon />
               </ListItemIcon>
-              <ListItemText primary="Integrations" />
+              <ListItemText primary="Find Causes" />
             </ListItem>
 
-            <ListItem
-              button
-              key="Create Reports"
-              onClick={() => handleNavigation("CreateReports")}
-            >
-              <ListItemIcon>
-                <ArticleIcon />
-              </ListItemIcon>
-              <ListItemText primary="Create Reports" />
-            </ListItem>
+            {userType === "donor" && (
+              <>
+                <ListItem
+                  button
+                  key="Dashboard"
+                  onClick={() => handleNavigation("Dashboard")}
+                >
+                  <ListItemIcon>
+                    <DonutSmallIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Allocation" />
+                </ListItem>
 
-            <ListItem
-              button
-              key="Learn"
-              onClick={() => handleNavigation("Learn")}
-            >
-              <ListItemIcon>
-                <SchoolIcon />
-              </ListItemIcon>
-              <ListItemText primary="Learn About ESG" />
-            </ListItem>
+                <ListItem
+                  button
+                  key="Create Reports"
+                  onClick={() => handleNavigation("CreateReports")}
+                >
+                  <ListItemIcon>
+                    <ArticleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Create Reports" />
+                </ListItem>
+
+                <ListItem
+                  button
+                  key="Learn"
+                  onClick={() => handleNavigation("Learn")}
+                >
+                  <ListItemIcon>
+                    <SchoolIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Learn About ESG" />
+                </ListItem>
+
+                <ListItem
+                  button
+                  key="Integrations"
+                  onClick={() => handleNavigation("Integrations")}
+                >
+                  <ListItemIcon>
+                    <LinkIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Integrations" />
+                </ListItem>
+              </>
+            )}
           </List>
         </div>
 
         <List style={{ width: "100%" }}>
-        <ListItem
-            button
-            key="Docs"
-            onClick={() => handleNavigation("Docs")}
-          >
+          <ListItem button key="Docs" onClick={() => handleNavigation("Docs")}>
             <ListItemIcon>
               <HelpCenterIcon />
             </ListItemIcon>
             <ListItemText primary="Docs" />
           </ListItem>
+
           <ListItem
             button
-            key="Docs"
-            onClick={() => handleNavigation("Docs")}
+            key="report"
+            onClick={() => handleNavigation("report")}
           >
             <ListItemIcon>
               <BugReportIcon />

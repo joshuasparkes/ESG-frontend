@@ -13,9 +13,12 @@ import Settings from "./pages/settings";
 import Integrations from "./pages/integrations";
 import Report from "./pages/report";
 import Learn from "./pages/learn";
-import Onboarding from "./pages/onboarding";
 import CreateReports from "./pages/createReports";
 import Docs from "./pages/docs";
+import OnboardingDonor from "./pages/onboardingDonor";
+import OnboardingCharity from "./pages/onboardingCharity";
+import FindCauses from "./pages/findCauses";
+import MyCharity from "./pages/myCharity";
 
 function App() {
   return (
@@ -31,9 +34,13 @@ function App() {
         </Route>
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/signIn" element={<SignInSide />} />
-        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/onboardingDonor" element={<OnboardingDonor />} />
+        <Route path="/onboardingCharity" element={<OnboardingCharity />} />
         <Route path="/createReports" element={<CreateReports />} />
         <Route path="/docs" element={<Docs />} />
+        <Route path="/findCauses" element={<FindCauses />} />
+        <Route path="/myCharity" element={<MyCharity />} />
+
       </Routes>
     </Router>
   );
