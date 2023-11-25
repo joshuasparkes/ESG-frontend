@@ -17,6 +17,10 @@ import {
   Paper,
   List,
   ListItem,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   ListItemText,
   Collapse,
   Button,
@@ -26,6 +30,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
+import { UNobjectives } from "../constants";
 
 const MyCharity = () => {
   const [charities, setCharities] = useState([]);
@@ -381,18 +386,18 @@ const MyCharity = () => {
                           onClick={() => handleSelectPage(page.id)}
                         >
                           <div
-                                  style={{
-                                    writingMode: "vertical-lr",
-                                    transform: "rotate(180deg)",
-                                    textAlign: "center",
-                                    color: "darkred",
-                                    left: 1,
-                                    marginRight: "20px",
-                                    alignSelf: "stretch", // Stretches the div to the full height of the ListItem
-                                  }}
-                                >
-                                  Page
-                                </div>
+                            style={{
+                              writingMode: "vertical-lr",
+                              transform: "rotate(180deg)",
+                              textAlign: "center",
+                              color: "darkred",
+                              left: 1,
+                              marginRight: "20px",
+                              alignSelf: "stretch", // Stretches the div to the full height of the ListItem
+                            }}
+                          >
+                            Page
+                          </div>
                           {editingItem &&
                           editingItem.id === page.id &&
                           editingItem.type === "page" ? (
@@ -537,6 +542,7 @@ const MyCharity = () => {
             autoFocus
             margin="dense"
             label="Page Title"
+            required
             fullWidth
             variant="outlined"
             value={pageTitle}
@@ -579,6 +585,7 @@ const MyCharity = () => {
             margin="dense"
             label="Fund Name"
             fullWidth
+            required
             variant="outlined"
             value={fundName}
             onChange={(e) => setFundName(e.target.value)}
@@ -597,18 +604,28 @@ const MyCharity = () => {
             margin="dense"
             label="Target Amount"
             fullWidth
+            required
             variant="outlined"
             value={fundTargetAmount}
             onChange={(e) => setFundTargetAmount(e.target.value)}
           />
-          <TextField
-            margin="dense"
-            label="Objective"
-            fullWidth
-            variant="outlined"
-            value={objective}
-            onChange={(e) => setObjective(e.target.value)}
-          />
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="objective-select-label">Objective</InputLabel>
+            <Select
+              labelId="objective-select-label"
+              id="objective-select"
+              value={objective}
+              required
+              label="Objective"
+              onChange={(e) => setObjective(e.target.value)}
+            >
+              {UNobjectives.map((obj, index) => (
+                <MenuItem key={index} value={obj}>
+                  {obj}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAddFundDialog(false)}>Cancel</Button>
@@ -625,6 +642,7 @@ const MyCharity = () => {
           <TextField
             label="Name"
             margin="dense"
+            required
             fullWidth
             variant="outlined"
             value={charityName}

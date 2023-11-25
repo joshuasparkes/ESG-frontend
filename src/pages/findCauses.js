@@ -40,7 +40,10 @@ const FindCauses = () => {
 
       setAllData({
         funds: fundsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
-        charities: charitiesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+        charities: charitiesSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })),
         pages: pagesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
       });
     };
@@ -57,7 +60,7 @@ const FindCauses = () => {
       let filteredData = [];
 
       switch (currentTab) {
-        case 0: // Charities
+        case 2: // Charities
           filteredData = allData.charities.filter(
             (charity) =>
               charity.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -71,7 +74,7 @@ const FindCauses = () => {
               page.description.toLowerCase().includes(searchQuery.toLowerCase())
           );
           break;
-        case 2: // Funds
+        case 0: // Funds
           filteredData = allData.funds.filter((fund) => {
             const nameMatch =
               fund.fundName &&
@@ -124,16 +127,16 @@ const FindCauses = () => {
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab label="Charities" />
-            <Tab label="Pages" />
             <Tab label="Funds" />
+            <Tab label="Pages" />
+            <Tab label="Charities" />
           </Tabs>
-          <TabPanel value={currentTab} index={0}>
+          <TabPanel value={currentTab} index={2}>
             {/* Render filtered charities */}
             <List>
+            Charities are under development
+
               {results.map((result, index) => (
-                // Render the relevant information from the documents here
-                // You can differentiate the collection by checking which data fields are present
                 <ListItem
                   style={{
                     display: "flex",
@@ -156,11 +159,9 @@ const FindCauses = () => {
             </List>
           </TabPanel>
           <TabPanel value={currentTab} index={1}>
-            {/* Render filtered pages */}
             <List>
+              Pages are under development
               {results.map((result, index) => (
-                // Render the relevant information from the documents here
-                // You can differentiate the collection by checking which data fields are present
                 <ListItem
                   style={{
                     display: "flex",
@@ -182,12 +183,9 @@ const FindCauses = () => {
               ))}
             </List>
           </TabPanel>
-          <TabPanel value={currentTab} index={2}>
-            {/* Render filtered funds */}
+          <TabPanel value={currentTab} index={0}>
             <List>
               {results.map((result, index) => (
-                // Render the relevant information from the documents here
-                // You can differentiate the collection by checking which data fields are present
                 <ListItem
                   style={{
                     display: "flex",

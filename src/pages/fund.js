@@ -15,6 +15,7 @@ import {
 import { db, auth } from "../firebase";
 import { useParams } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
+import BackButton from "../components/back";
 
 const FundPage = () => {
   const [fundDetails, setFundDetails] = useState({
@@ -176,17 +177,26 @@ const FundPage = () => {
           gap: "20px",
         }}
       >
-        <Typography
-          variant="h1"
+        <div
           style={{
-            fontSize: "48px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
             marginTop: "30px",
             marginBottom: "20px",
-            color: "#6D7580",
           }}
         >
-          Fund
-        </Typography>
+          <Typography
+            variant="h1"
+            style={{
+              fontSize: "48px",
+              color: "#6D7580",
+            }}
+          >
+            Fund
+          </Typography>
+          <BackButton />
+        </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           {userType === "charity" ? (
@@ -299,6 +309,7 @@ const FundPage = () => {
               borderRadius: "8px",
               padding: "10px",
               width: "66%",
+              marginBottom: "100px",
             }}
             key={index}
           >

@@ -128,7 +128,7 @@ function Dashboard() {
             variant="h2"
             style={{ fontSize: "24px", marginBottom: "50px", color: "#858C94" }}
           >
-            How your budget is allocated
+            Your Impact
           </Typography>
         </Box>
         <div style={{ display: "flex", alignItems: "flex-start" }}>

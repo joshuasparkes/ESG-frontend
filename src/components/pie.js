@@ -82,7 +82,7 @@ const PieChartComponent = ({ userId }) => {
     datasets: [
       {
         data: donationsData.map((donation) => donation.percentage),
-        backgroundColor: ["#1E88E5", "#26A69A", "#8E24AA"],
+        backgroundColor: ["lightgrey", "#fff", "#fff"],
         borderColor: [
           "rgba(120, 120, 120, 1)", // Gray
           "rgba(120, 120, 120, 1)", // Gray
