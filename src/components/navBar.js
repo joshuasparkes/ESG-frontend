@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -8,17 +8,17 @@ import Logo from "../images/tracsr-logomark-type-white.png";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import { useNavigate } from "react-router-dom";
-import { auth, signOut, db } from "../firebase";
+import { auth, signOut } from "../firebase";
 // import LinkIcon from "@mui/icons-material/Link";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import SchoolIcon from "@mui/icons-material/School";
 import ArticleIcon from "@mui/icons-material/Article";
 import HelpCenterIcon from "@mui/icons-material/HelpCenter";
 import SearchIcon from "@mui/icons-material/Search";
-import { doc, getDoc } from "firebase/firestore";
+// import { doc, getDoc } from "firebase/firestore";
 
 function Navbar() {
-  const [userType, setUserType] = useState("");
+  // const [userType, setUserType] = useState("");
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -31,20 +31,20 @@ function Navbar() {
     }
   };
 
-  useEffect(() => {
-    const fetchUserType = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          setUserType(userSnap.data().userType); // Assuming the field is called 'userType'
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserType = async () => {
+  //     const user = auth.currentUser;
+  //     if (user) {
+  //       const userRef = doc(db, "users", user.uid);
+  //       const userSnap = await getDoc(userRef);
+  //       if (userSnap.exists()) {
+  //         setUserType(userSnap.data().userType); // Assuming the field is called 'userType'
+  //       }
+  //     }
+  //   };
 
-    fetchUserType();
-  }, []);
+  //   fetchUserType();
+  // }, []);
 
   const handleNavigation = (page) => {
     switch (page) {
