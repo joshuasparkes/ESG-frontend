@@ -31,6 +31,8 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { UNobjectives } from "../constants";
+import BackButton from "../components/back";
+
 
 const MyCharity = () => {
   const [charities, setCharities] = useState([]);
@@ -309,7 +311,8 @@ const MyCharity = () => {
             color: "#6D7580",
           }}
         >
-          My Charities
+          My Causes
+
           <Button
             variant="contained"
             color="primary"
@@ -319,9 +322,10 @@ const MyCharity = () => {
               justifySelf: "center",
             }}
             onClick={() => setOpenAddCharityDialog(true)}
-          >
+            >
             New Charity
           </Button>
+            <BackButton/>
         </Typography>
         <Paper elevation={0} style={{ padding: "10px", marginTop: "20px" }}>
           <List>

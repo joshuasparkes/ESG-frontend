@@ -15,7 +15,6 @@ import SchoolIcon from "@mui/icons-material/School";
 import ArticleIcon from "@mui/icons-material/Article";
 import HelpCenterIcon from "@mui/icons-material/HelpCenter";
 import SearchIcon from "@mui/icons-material/Search";
-import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import { doc, getDoc } from "firebase/firestore";
 
 function Navbar() {
@@ -112,7 +111,13 @@ function Navbar() {
           <img
             src={Logo}
             alt="PMAI Logo"
-            style={{ width: "100px", marginBottom: "20px", marginTop: "30px", alignSelf:'flex-start', marginLeft:'15px' }}
+            style={{
+              width: "100px",
+              marginBottom: "20px",
+              marginTop: "30px",
+              alignSelf: "flex-start",
+              marginLeft: "15px",
+            }}
           />
           <List style={{ width: "100%" }}>
             <ListItem
@@ -134,56 +139,48 @@ function Navbar() {
               <ListItemIcon>
                 <SearchIcon style={{ color: "white" }} />
               </ListItemIcon>
-              <ListItemText style={{ color: "white" }} primary="Find Causes" />
+              <ListItemText style={{ color: "white" }} primary="Causes" />
             </ListItem>
 
-            {userType === "charity" && (
-              <ListItem
-                button
-                key="myCharity"
-                onClick={() => handleNavigation("myCharity")}
-              >
-                <ListItemIcon>
-                  <VolunteerActivismIcon style={{ color: "white" }} />
-                </ListItemIcon>
-                <ListItemText
-                  style={{ color: "white" }}
-                  primary="My Charities"
-                />
-              </ListItem>
-            )}
+            {/* <ListItem
+              button
+              key="myCharity"
+              onClick={() => handleNavigation("myCharity")}
+            >
+              <ListItemIcon>
+                <VolunteerActivismIcon style={{ color: "white" }} />
+              </ListItemIcon>
+              <ListItemText style={{ color: "white" }} primary="My Charities" />
+            </ListItem> */}
+            <ListItem
+              button
+              key="Create Reports"
+              onClick={() => handleNavigation("CreateReports")}
+            >
+              <ListItemIcon>
+                <ArticleIcon style={{ color: "white" }} />
+              </ListItemIcon>
+              <ListItemText
+                style={{ color: "white" }}
+                primary="Reports"
+              />
+            </ListItem>
 
-            {userType === "donor" && (
-              <>
-                <ListItem
-                  button
-                  key="Create Reports"
-                  onClick={() => handleNavigation("CreateReports")}
-                >
-                  <ListItemIcon>
-                    <ArticleIcon style={{ color: "white" }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{ color: "white" }}
-                    primary="Create Reports"
-                  />
-                </ListItem>
+            <ListItem
+              button
+              key="Learn"
+              onClick={() => handleNavigation("Learn")}
+            >
+              <ListItemIcon>
+                <SchoolIcon style={{ color: "white" }} />
+              </ListItemIcon>
+              <ListItemText
+                style={{ color: "white" }}
+                primary="Learn"
+              />
+            </ListItem>
 
-                <ListItem
-                  button
-                  key="Learn"
-                  onClick={() => handleNavigation("Learn")}
-                >
-                  <ListItemIcon>
-                    <SchoolIcon style={{ color: "white" }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{ color: "white" }}
-                    primary="Learn About ESG"
-                  />
-                </ListItem>
-
-                {/* <ListItem
+            {/* <ListItem
                   button
                   key="Integrations"
                   onClick={() => handleNavigation("Integrations")}
@@ -193,8 +190,6 @@ function Navbar() {
                   </ListItemIcon>
                   <ListItemText primary="Integrations" />
                 </ListItem> */}
-              </>
-            )}
           </List>
         </div>
 

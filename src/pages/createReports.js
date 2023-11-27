@@ -38,15 +38,15 @@ const CreateReports = () => {
             color: "#6D7580",
           }}
         >
-          Create Reports
+          Reports
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ float: "right", marginBottom: "20px" }}
+          >
+            Generate Report
+          </Button>
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginBottom: "20px" }}
-        >
-          Generate Report
-        </Button>
         <TableContainer elevation={0} component={Paper}>
           <Table>
             <TableHead>

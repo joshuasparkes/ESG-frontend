@@ -309,7 +309,7 @@ const FundPage = () => {
               borderRadius: "8px",
               padding: "10px",
               width: "66%",
-              marginBottom: "100px",
+              marginBottom: "0px",
             }}
             key={index}
           >

@@ -12,7 +12,7 @@ const BackButton = () => {
             startIcon={<ArrowBackIosIcon />}
             onClick={() => navigate(-1)}
             variant="outlined"
-            style={{borderWidth:'0px', color: 'grey'}}
+            style={{borderWidth:'0px', color: 'grey', float: 'right'}}
         />
     );
 };

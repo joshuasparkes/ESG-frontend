@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { db, auth } from "../firebase";
+import { collection, getDocs, getDoc, doc } from "firebase/firestore";
 import Navbar from "../components/navBar";
 import {
   TextField,
   Typography,
   Container,
+  Button,
   Paper,
   Tab,
   Tabs,
@@ -26,6 +27,22 @@ const FindCauses = () => {
     pages: [],
   });
   const [currentTab, setCurrentTab] = useState(0);
+  const [userType, setUserType] = useState("");
+
+  useEffect(() => {
+    const fetchUserType = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setUserType(userSnap.data().userType);
+        }
+      }
+    };
+
+    fetchUserType();
+  }, []);
 
   const handleViewFund = (fundId) => {
     console.log("Navigating to fund with ID:", fundId);
@@ -97,7 +114,7 @@ const FindCauses = () => {
 
   return (
     <div>
-      <Navbar />
+     <Navbar />
       <Container
         style={{ marginLeft: "250px", maxWidth: `calc(100% - 305px)` }}
       >
@@ -110,8 +127,19 @@ const FindCauses = () => {
             color: "#6D7580",
           }}
         >
-          Find Causes
+          Causes
+        {userType === "charity" && (
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ float: "right", marginBottom: "10px" }}
+            onClick={() => navigate("/myCharity")}
+          >
+            My Causes
+          </Button>
+        )}
         </Typography>
+
         <TextField
           fullWidth
           label="Search for causes"
@@ -134,8 +162,7 @@ const FindCauses = () => {
           <TabPanel value={currentTab} index={2}>
             {/* Render filtered charities */}
             <List>
-            Charities are under development
-
+              Charities are under development
               {results.map((result, index) => (
                 <ListItem
                   style={{

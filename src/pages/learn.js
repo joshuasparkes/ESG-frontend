@@ -55,7 +55,7 @@ const Learn = () => {
             color: "#6D7580",
           }}
         >
-          Learn about ESG
+          Learn
         </Typography>
 
         {boxData.map((item, index) => (
