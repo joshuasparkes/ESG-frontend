@@ -8,6 +8,7 @@ import {
   updateDoc,
   doc,
   addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import Navbar from "../components/navBar";
 import { useNavigate } from "react-router-dom";
@@ -66,6 +67,7 @@ const MyCharity = () => {
         location: charityLocation,
         number: charityNumber,
         charityLead: auth.currentUser.uid,
+        createdAt: serverTimestamp(), // Add createdAt field
       });
       console.log("Charity added with ID: ", charityRef.id);
       // Update the charities state
@@ -94,6 +96,7 @@ const MyCharity = () => {
         description: pageDescription,
         website: pageWebsite,
         linkedCharity: addingForCharityId, // Use addingForCharityId here
+        createdAt: serverTimestamp(), // Add createdAt field
       });
 
       console.log("Page added with ID: ", pageRef.id);
@@ -126,6 +129,7 @@ const MyCharity = () => {
         targetAmount: parseFloat(fundTargetAmount),
         objective: objective,
         linkedPage: addingForPageId, // Use addingForPageId here
+        createdAt: serverTimestamp(), // Add createdAt field
       });
 
       console.log("Fund added with ID: ", fundRef.id);

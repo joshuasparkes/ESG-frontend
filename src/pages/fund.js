@@ -11,6 +11,7 @@ import {
   updateDoc,
   query,
   where,
+  serverTimestamp
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useParams } from "react-router-dom";
@@ -126,6 +127,7 @@ const FundPage = () => {
           donatingUser: auth.currentUser?.uid,
           amount: numericAmount,
           linkedFund: fundId,
+          createdAt: serverTimestamp() // Add createdAt field here
         };
 
         const docRef = await addDoc(collection(db, "donations"), newDonation);

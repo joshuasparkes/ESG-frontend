@@ -13,7 +13,7 @@ const BackButton = () => {
             onClick={() => navigate(-1)}
             variant="outlined"
             style={{borderWidth:'0px', color: 'grey', float: 'right'}}
-        />
+        >Back</Button>
     );
 };
 

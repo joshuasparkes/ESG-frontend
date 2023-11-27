@@ -21,6 +21,7 @@ const FindCauses = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [funds, setFunds] = useState([]); // State to store all funds
   const [allData, setAllData] = useState({
     funds: [],
     charities: [],
@@ -28,6 +29,20 @@ const FindCauses = () => {
   });
   const [currentTab, setCurrentTab] = useState(0);
   const [userType, setUserType] = useState("");
+
+  useEffect(() => {
+    const fetchFunds = async () => {
+      const fundsSnapshot = await getDocs(collection(db, "funds"));
+      const fetchedFunds = fundsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setFunds(fetchedFunds);
+      setResults(fetchedFunds); // Initialize results with all funds
+    };
+
+    fetchFunds();
+  }, []);
 
   useEffect(() => {
     const fetchUserType = async () => {
@@ -74,47 +89,26 @@ const FindCauses = () => {
 
   const handleSearch = () => {
     if (searchQuery) {
-      let filteredData = [];
-
-      switch (currentTab) {
-        case 2: // Charities
-          filteredData = allData.charities.filter(
-            (charity) =>
-              charity.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              charity.location.toLowerCase().includes(searchQuery.toLowerCase())
-          );
-          break;
-        case 1: // Pages
-          filteredData = allData.pages.filter(
-            (page) =>
-              page.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              page.description.toLowerCase().includes(searchQuery.toLowerCase())
-          );
-          break;
-        case 0: // Funds
-          filteredData = allData.funds.filter((fund) => {
-            const nameMatch =
-              fund.fundName &&
-              fund.fundName.toLowerCase().includes(searchQuery.toLowerCase());
-            const descriptionMatch =
-              fund.fundDescription &&
-              fund.fundDescription
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase());
-            return nameMatch || descriptionMatch;
-          });
-          break;
-        default:
-          break;
-      }
-
+      let filteredData = funds.filter(
+        (fund) =>
+          (fund.fundName &&
+            fund.fundName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (fund.fundDescription &&
+            fund.fundDescription
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())) ||
+          (fund.objective &&
+            fund.objective.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
       setResults(filteredData);
+    } else {
+      setResults(funds); // Reset results to show all funds if search query is empty
     }
   };
 
   return (
     <div>
-     <Navbar />
+      <Navbar />
       <Container
         style={{ marginLeft: "250px", maxWidth: `calc(100% - 305px)` }}
       >
@@ -128,16 +122,24 @@ const FindCauses = () => {
           }}
         >
           Causes
-        {userType === "charity" && (
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
-            style={{ float: "right", marginBottom: "10px" }}
-            onClick={() => navigate("/myCharity")}
+            style={{ float: "right", marginBottom: "10px", marginLeft: "10px" }}
+            onClick={() => navigate("/myDonations")}
           >
-            My Causes
+            My Donations
           </Button>
-        )}
+          {userType === "charity" && (
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ float: "right", marginBottom: "10px" }}
+              onClick={() => navigate("/myCharity")}
+            >
+              My Causes
+            </Button>
+          )}
         </Typography>
 
         <TextField
@@ -156,8 +158,8 @@ const FindCauses = () => {
             textColor="primary"
           >
             <Tab label="Funds" />
-            <Tab label="Pages" />
-            <Tab label="Charities" />
+            {/* <Tab label="Pages" /> */}
+            {/* <Tab label="Charities" /> */}
           </Tabs>
           <TabPanel value={currentTab} index={2}>
             {/* Render filtered charities */}
@@ -169,7 +171,9 @@ const FindCauses = () => {
                     display: "flex",
                     alignItems: "flex-start",
                     textAlign: "left",
-                    borderWidth: "0px",
+                    borderWidth: "1px",
+                    borderBottom: "1px solid #d3d3d3",
+                    borderRadius: "0px",
                   }}
                   key={index}
                 >
@@ -195,6 +199,8 @@ const FindCauses = () => {
                     alignItems: "flex-start",
                     textAlign: "left",
                     borderWidth: "0px",
+                    borderBottom: "1px solid #d3d3d3",
+                    borderRadius: "0px",
                   }}
                   key={index}
                 >
@@ -212,31 +218,35 @@ const FindCauses = () => {
           </TabPanel>
           <TabPanel value={currentTab} index={0}>
             <List>
-              {results.map((result, index) => (
-                <ListItem
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    textAlign: "left",
-                    borderWidth: "0px",
-                  }}
-                  key={index}
-                  button
-                  onClick={() => {
-                    console.log("Fund item clicked with ID:", result.id);
-                    handleViewFund(result.id);
-                  }}
+              {results.length > 0 ? (
+                results.map((result, index) => (
+                  <ListItem
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      textAlign: "left",
+                      borderBottom: "1px solid #d3d3d3",
+                    }}
+                    key={index}
+                    button
+                    onClick={() => handleViewFund(result.id)}
+                  >
+                    <ListItemText
+                      sx={{ width: "70%" }}
+                      primary={result.name || result.fundName || result.title}
+                      secondary={result.fundDescription || result.description}
+                    />
+                    <Typography variant="body2">{result.objective}</Typography>
+                  </ListItem>
+                ))
+              ) : (
+                <Typography
+                  variant="subtitle1"
+                  style={{ padding: "10px", textAlign: "center" }}
                 >
-                  <ListItemText
-                    primary={result.name || result.fundName || result.title}
-                    secondary={
-                      result.location ||
-                      result.fundDescription ||
-                      result.description
-                    }
-                  />
-                </ListItem>
-              ))}
+                  No causes found.
+                </Typography>
+              )}
             </List>
           </TabPanel>
         </Paper>

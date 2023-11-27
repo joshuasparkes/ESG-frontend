@@ -20,6 +20,7 @@ import OnboardingCharity from "./pages/onboardingCharity";
 import FindCauses from "./pages/findCauses";
 import MyCharity from "./pages/myCharity";
 import FundPage from "./pages/fund";
+import MyDonations from "./pages/myDonations";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path="/docs" element={<Docs />} />
         <Route path="/findCauses" element={<FindCauses />} />
         <Route path="/myCharity" element={<MyCharity />} />
+        <Route path="/myDonations" element={<MyDonations />} />
         <Route path="/fund/:fundId" element={<FundPage />} />
       </Routes>
     </Router>
