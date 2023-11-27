@@ -21,7 +21,8 @@ const FindCauses = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
-  const [funds, setFunds] = useState([]); // State to store all funds
+  const [funds, setFunds] = useState([]);
+  // eslint-disable-next-line
   const [allData, setAllData] = useState({
     funds: [],
     charities: [],
